@@ -1,0 +1,4847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<title>陆椰文个人网页</title>
+<!-- 字体：在线升级，离线降级系统字体 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<!-- GSAP + ScrollTrigger（本地化，滚动驱动核心） -->
+<script src="assets/js/gsap.min.js"></script>
+<script src="assets/js/ScrollTrigger.min.js"></script>
+<style>
+/* ============================================================
+   设计 Token（修正版：黑白交替 + 橙色点缀 + 紫色云雾）
+   原站实测：--_color---m-black:#111, --_color---secondary:#f50
+   ============================================================ */
+:root{
+  --black:#111111;            /* 主黑（原站 --_color---m-black，非纯黑更柔和）*/
+  --white:#FFFFFF;            /* 主白 */
+  --bg:var(--white);          /* 默认背景白 */
+  --bg-dark:var(--black);     /* 深色section背景 */
+  --text:var(--black);        /* 默认文字黑 */
+  --text-on-dark:var(--white);/* 深底文字白 */
+  --text-mid:#6b7280;         /* 中性灰文字 */
+  --text-soft:rgba(17,17,17,.6);     /* 浅底柔文字 */
+  --text-soft-dark:rgba(255,255,255,.8); /* 深底柔文字 */
+  --text-note:rgba(17,17,17,.4);     /* 浅底注释 */
+  --text-note-dark:rgba(255,255,255,.25); /* 深底注释 */
+  --accent:#FF5500;           /* 主点缀橙（原站 #f50）*/
+  --accent-soft:rgba(255,85,0,.1);
+  --purple-haze:#A686E0;      /* Why区紫色云雾（原站 #a686e04d）*/
+  --border:rgba(17,17,17,.08);       /* 浅底边框 */
+  --border-dark:rgba(255,255,255,.12); /* 深底边框 */
+  --border-bold:rgba(17,17,17,.16);  /* 浅底加粗边框 */
+  --border-bold-dark:rgba(255,255,255,.32); /* 深底加粗边框 */
+  --maxw:1400px;
+  --ease:cubic-bezier(.445,.05,.55,.95); /* 原站同款缓动 */
+  --font-display:'Anton','HYZhongHeiTi-197','Arial Black','PingFang SC',sans-serif;   /* 标题：Anton(英文)+汉仪中和黑体(中文) */
+  --font-body:'Inter','NotoSansSC-VF','PingFang SC','Noto Sans SC',system-ui,sans-serif;   /* 正文：Inter(英文)+思源黑体(中文) */
+  --font-cn-display:'HYZhongHeiTi-197','PingFang SC',sans-serif;   /* 中文专用粗黑标题 */
+  --font-mono:'JetBrains Mono','Consolas',monospace;
+}
+/* 中文字体声明（本地引用） */
+@font-face{
+  font-family:'HYZhongHeiTi-197';
+  src:url('assets/fonts/HYZhongHeiTi-197.ttf') format('truetype');
+  font-weight:700;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:'NotoSansSC-VF';
+  src:url('assets/fonts/NotoSansSC-VF.woff2') format('woff2');
+  font-weight:100 900;font-style:normal;font-display:swap;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-weight:400;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ============================================================
+   通用容器
+   ============================================================ */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 40px}
+@media(max-width:768px){.container{padding:0 20px}}
+
+/* 通用 section 标签 */
+.section-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:32px;
+}
+.section-label .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(40px,7vw,96px);
+  line-height:.95;letter-spacing:-.01em;
+  text-transform:uppercase;
+  margin-bottom:40px;
+}
+.section-title .accent{color:var(--accent)}
+.section-desc{
+  font-size:clamp(16px,1.5vw,19px);
+  max-width:52ch;
+  margin-bottom:48px;
+  font-weight:300;
+  line-height:1.7;
+}
+
+/* ============================================================
+   Section 1: Hero（黑底 + 立体库旋转 Canvas）
+   对应第1段：旋转地球仪 → 立体库360°旋转
+   ============================================================ */
+.hero{
+  position:relative;
+  background:#FFFFFF;  /* 改成白色背景 */
+  color:#111111;      /* 改成黑色文字 */
+  height:100vh;min-height:640px;
+  overflow:hidden;
+}
+.hero-sticky{
+  position:sticky;top:0;
+  height:100svh;
+  display:flex;align-items:flex-end;
+  overflow:hidden;
+}
+/* 大树UI：0813底图（降对比度，最底层） */
+.hero-base-bg{
+  position:absolute;inset:0;
+  background:#FFFFFF url('sy4.png') center/cover no-repeat;  /* sy4.png 原图（常驻显示，清晰版） */
+  z-index:0;
+  filter:none;  /* 原图，不降对比度不模糊 */
+  opacity:1;
+}
+/* 白色迷雾遮罩层：改用 canvas 直接画迷雾 + destination-out 擦除（不依赖 CSS mask） */
+.hero-reveal-layer{
+  position:absolute;inset:0;
+  background:transparent;  /* 透明，迷雾由 canvas 绘制 */
+  z-index:1;
+  pointer-events:none;
+  opacity:1;
+  -webkit-mask-image:none;
+  mask-image:none;
+}
+/* 迷雾 canvas（直接画白色迷雾 + 鼠标位置擦除）
+   用 CSS mask 限制只在 sy4.png 非透明区显示迷雾，不需要 getImageData */
+#heroSpotlightCanvas{
+  position:absolute;inset:0;
+  z-index:1;
+  pointer-events:none;
+  display:block;
+  -webkit-mask: url('sy4.png') center/cover no-repeat;
+  mask: url('sy4.png') center/cover no-repeat;
+}
+/* IP角色视频：完整清晰显示，不淡化（旧filter已移除） */
+/* dim-mask已删除（不再淡化IP角色） */
+/* 鼠标轨迹局部glitch场 */
+.hero-glitch-field{
+  position:absolute;
+  width:220px;height:220px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:3;
+  transform:translate(-50%,-50%);
+  opacity:0;
+  transition:opacity .25s;
+  /* RGB分离径向渐变 */
+  background:
+    radial-gradient(circle at 45% 50%, rgba(255,0,50,.25) 0%, transparent 50%),
+    radial-gradient(circle at 55% 50%, rgba(0,150,255,.25) 0%, transparent 50%);
+  mix-blend-mode:screen;
+  filter:blur(1px);
+}
+.hero-glitch-field.active{opacity:1}
+/* glitch时苹果抖动+RGB分离 */
+.hero-canvas-wrap.glitch .hero-star-canvas{
+  animation:glitchShake .12s steps(2) 2;
+  filter:brightness(0.92) contrast(0.9) drop-shadow(3px 0 0 rgba(255,0,50,.7)) drop-shadow(-3px 0 0 rgba(0,150,255,.7));
+}
+@keyframes glitchShake{
+  0%{transform:translate(0,0)}
+  20%{transform:translate(-3px,1px) skewX(2deg)}
+  40%{transform:translate(3px,-1px) skewX(-2deg)}
+  60%{transform:translate(-2px,2px)}
+  80%{transform:translate(2px,-2px) skewX(1deg)}
+  100%{transform:translate(0,0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-canvas-wrap.glitch .hero-star-canvas{animation:none}
+}
+/* 右侧 Canvas 容器（IP角色视频，最上层图层） */
+.hero-canvas-wrap{
+  position:absolute;
+  right:2%;top:50%;        /* 往右挪一点 */
+  transform:translateY(-50%);
+  height:min(65vh,640px);        /* 用高度限制，贴合视频 640px */
+  aspect-ratio:3/4;              /* 贴合 IP 视频 480x640 比例 */
+  z-index:9999;                 /* 网页最上面的图层 */
+  background:transparent;
+  pointer-events:auto;           /* 支持 hover 触发光晕加强 */
+  /* 双层框+光晕：内层橘黄实线描边 + 外层光晕扩散 */
+  border:2px solid var(--accent);   /* 内层橘黄实线描边 */
+  border-radius:12px;               /* 圆角照片框 */
+  box-shadow:
+    0 0 0 4px rgba(255,165,0,0.15),  /* 内层光晕（紧贴描边） */
+    0 0 24px 4px rgba(255,165,0,0.35),  /* 中层光晕 */
+    0 0 48px 8px rgba(255,165,0,0.2);   /* 外层光晕（扩散） */
+  transition:box-shadow .4s ease, transform .4s ease;
+  animation:photoFramePulse 3s ease-in-out infinite;  /* 光晕呼吸动画 */
+}
+/* hover 时光晕加强 */
+.hero-canvas-wrap:hover{
+  box-shadow:
+    0 0 0 6px rgba(255,165,0,0.25),
+    0 0 36px 8px rgba(255,165,0,0.55),
+    0 0 72px 16px rgba(255,165,0,0.35);
+  transform:translateY(-50%) scale(1.02);
+}
+/* 光晕呼吸动画 */
+@keyframes photoFramePulse{
+  0%,100%{
+    box-shadow:
+      0 0 0 4px rgba(255,165,0,0.15),
+      0 0 24px 4px rgba(255,165,0,0.35),
+      0 0 48px 8px rgba(255,165,0,0.2);
+  }
+  50%{
+    box-shadow:
+      0 0 0 5px rgba(255,165,0,0.2),
+      0 0 30px 6px rgba(255,165,0,0.45),
+      0 0 60px 12px rgba(255,165,0,0.28);
+  }
+}
+.hero-canvas-wrap video, .hero-canvas-wrap canvas{
+  width:100%;height:100%;display:block;
+}
+/* IP视频（直接用video元素，不用抠像，白底与首页白底融合） */
+.hero-star-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;
+  z-index:1;
+  pointer-events:none;
+}
+/* 数据划痕粒子溅射canvas */
+.hero-sparks-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  z-index:6;
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-star-canvas{animation:none}
+}
+
+.hero-content{
+  position:relative;z-index:10000;  /* 最顶部图层，在 IP 视频框之上 */
+  width:100%;
+  padding:0 40px 96px;
+  max-width:var(--maxw);margin:0 auto;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:28px;
+  opacity:0;transform:translateY(20px);
+  animation:fadeUp .9s var(--ease) .3s forwards;
+}
+.hero-eyebrow .pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 0 0 rgba(255,85,0,.6);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(255,85,0,.6)}
+  70%{box-shadow:0 0 0 12px rgba(255,85,0,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,85,0,0)}
+}
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(48px,8.5vw,128px);
+  line-height:.95;letter-spacing:-.01em;
+  text-transform:uppercase;
+  margin-bottom:28px;
+  max-width:14ch;
+}
+.hero-title .line{display:block;overflow:hidden}
+.hero-title .line span{
+  display:inline-block;
+  transform:translateY(110%);
+  animation:lineUp 1.1s var(--ease) forwards;
+}
+.hero-title .line:nth-child(1) span{animation-delay:.45s}
+.hero-title .line:nth-child(2) span{animation-delay:.6s}
+.hero-title .accent{color:var(--accent)}
+@keyframes lineUp{to{transform:translateY(0)}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.hero-subtitle{
+  font-size:clamp(15px,1.6vw,19px);
+  color:#111111;  /* 纯黑字（清晰可读）*/
+  max-width:48ch;
+  margin-bottom:44px;
+  font-weight:400;  /* 加粗一点更清晰 */
+  position:relative;z-index:10001;  /* 最顶层 */
+  opacity:0;transform:translateY(20px);
+  animation:fadeUp .9s var(--ease) .9s forwards;
+}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 30px;
+  font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  border-radius:999px;
+  transition:all .3s var(--ease);
+  border:1.5px solid transparent;
+}
+.btn-primary{background:var(--accent);color:var(--white)}
+.btn-primary:hover{background:var(--white);color:var(--black);transform:translateY(-2px)}
+.btn-ghost{border-color:var(--border-bold-dark);color:var(--white)}
+
+/* === 标题阻尼跟随+区域模糊（hover 时文字本身跟随鼠标+RGB分离） === */
+.hero-eyebrow, .hero-title, .hero-subtitle {
+  transition: text-shadow .15s ease, filter .15s ease;
+  will-change: transform, text-shadow;
+}
+.btn-ghost:hover{border-color:var(--white);background:rgba(255,255,255,.05)}
+/* Hero 改成白底后，btn-ghost 在 hero 内显示黑边黑字 */
+.hero .btn-ghost{border-color:var(--border-bold);color:var(--black)}
+.hero .btn-ghost:hover{border-color:var(--black);background:rgba(17,17,17,.05)}
+.btn .arrow{transition:transform .3s var(--ease)}
+.btn:hover .arrow{transform:translateX(4px)}
+.hero-cta .btn{opacity:0;transform:translateY(20px);animation:fadeUp .9s var(--ease) 1.1s forwards}
+
+/* Hero 超长滚动区（制造停留） */
+.hero-spacer{height:50vh;background:#FFFFFF}  /* 改成白色，与 hero 背景一致 */
+@media(max-width:768px){
+  .hero-content{padding:0 20px 64px}
+  .hero-canvas-wrap{right:-25%;width:85vw}
+  .hero-subtitle{margin-bottom:32px}
+  .btn{padding:14px 24px;flex:1;justify-content:center}
+}
+
+/* ============================================================
+   Section 2: Service（白底→黑底 + 吊装/穿梭车/俯视进库 Canvas）
+   对应第2-3-4段：一镜到底 300帧
+   ============================================================ */
+.service{
+  position:relative;
+  background:var(--white);
+  color:var(--text);
+}
+.service-sticky{
+  position:sticky;top:0;
+  height:100vh;
+  overflow:hidden;
+  display:flex;align-items:center;
+}
+.service-canvas-wrap{
+  position:absolute;inset:0;
+  z-index:1;
+}
+.service-canvas-wrap canvas{
+  width:100%;height:100%;display:block;
+}
+/* P1 一镜到底：3场景叠放，ScrollTrigger驱动切换 */
+.service-scenes{
+  position:absolute;inset:0;
+  background:#ffffff;
+}
+/* 第0层：水墨渐变背景层（JS动态设色，纯白→淡灰→中灰→深灰） */
+.service-ink-bg{
+  position:absolute;inset:0;
+  z-index:0;
+  background:#ffffff;
+  transition:background-color .15s linear;
+}
+/* SVG turbulence晕染+极简噪点纹理层（叠加在水墨背景上） */
+.service-ink-svg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  z-index:0;
+  opacity:.5;
+  pointer-events:none;
+  mix-blend-mode:multiply;
+}
+/* 第2层：透明底3D序列帧Canvas层 */
+.service-canvas-bg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;
+  z-index:2;
+  opacity:1;
+  transition:opacity .6s var(--ease);
+  pointer-events:none;
+}
+.service-canvas-bg.hidden{opacity:0}
+/* 第3层：英文标签UI层（Anton超粗体，阶段驱动+区域定位） */
+.service-labels{
+  position:absolute;inset:0;
+  z-index:3;
+  pointer-events:none;
+}
+.srv-label{
+  position:absolute;
+  display:flex;flex-direction:column;gap:2px;
+  opacity:0;
+  transform:translateY(12px) scale(.92);
+  transition:opacity .5s var(--ease),transform .6s cubic-bezier(.2,.8,.2,1);
+  font-family:'Anton',Impact,'Arial Black',sans-serif;
+  text-align:left;
+  line-height:1;
+}
+.srv-label.show{opacity:1;transform:translateY(0) scale(1)}
+/* rack/topview 居中标签需保持 translateX(-50%) */
+.srv-label[data-label="rack"].show,.srv-label[data-label="topview"].show{
+  transform:translateX(-50%) translateY(0) scale(1);
+}
+.srv-label[data-label="rack"],.srv-label[data-label="topview"]{
+  transform:translateX(-50%) translateY(12px) scale(.92);
+}
+.lbl-num{
+  font-size:14px;font-weight:400;
+  color:var(--accent);
+  letter-spacing:.3em;
+  font-family:'JetBrains Mono',monospace;
+  margin-bottom:6px;
+}
+.lbl-en{
+  font-size:clamp(28px,4vw,52px);
+  font-weight:400;
+  color:#111;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+.srv-label[data-label="shuttle"] .lbl-en,
+.srv-label[data-label="topview"] .lbl-en{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.srv-label[data-label="rack"] .lbl-en,
+.srv-label[data-label="crane"] .lbl-en{color:#111}
+.lbl-desc{
+  font-size:clamp(11px,1vw,14px);
+  font-weight:400;
+  color:#666;
+  letter-spacing:.25em;
+  margin-top:6px;
+  font-family:'JetBrains Mono',monospace;
+}
+.srv-label[data-label="shuttle"] .lbl-desc,
+.srv-label[data-label="topview"] .lbl-desc{color:rgba(255,255,255,.7)}
+.service-scene{
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+  opacity:0;
+  transition:opacity .6s var(--ease);
+  pointer-events:none;
+}
+.service-scene.active{opacity:1}
+.service-scene svg{
+  width:100%;height:100%;
+  max-height:100vh;
+  object-fit:contain;
+}
+/* 场景1+2 SVG被透明底3D视频替代，仅保留active状态驱动标签切换 */
+#scene1 svg,#scene2 svg{display:none}
+#scene3 svg{display:block}
+
+.service-content{
+  position:relative;z-index:1;
+  width:100%;
+  max-width:var(--maxw);margin:0 auto;
+  padding:0 40px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+  align-items:center;
+  pointer-events:none;
+  transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s var(--ease);
+}
+.service-left,.service-right{pointer-events:auto}
+.service-left{
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(14px);
+  padding:32px 36px;
+  border-radius:8px;
+  border-left:3px solid var(--accent);
+  transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s var(--ease);
+}
+.service-right{
+  background:rgba(17,17,17,.78);
+  color:var(--text-on-dark);
+  padding:32px 36px;
+  border-radius:8px;
+  border-right:3px solid var(--accent);
+  backdrop-filter:blur(14px);
+  transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s var(--ease);
+}
+/* 滚几下后：文字框快速跳到角落，缩小50%，淡化50% */
+.service-content.shrunk{
+  transform:translateX(-30vw) translateY(-22vh) scale(.5);
+  transform-origin:left top;
+  opacity:.5;
+}
+/* mix-blend-mode:difference 反色数字（原站同款） */
+.service-speed{
+  font-family:var(--font-mono);
+  font-size:clamp(60px,10vw,140px);
+  font-weight:700;
+  line-height:1;
+  mix-blend-mode:difference;
+  color:var(--white);
+  margin-bottom:16px;
+}
+.service-stage-label{
+  font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text-mid);
+  margin-bottom:12px;
+}
+.service-stage-desc{
+  font-size:15px;
+  color:var(--text-soft-dark);
+  line-height:1.7;
+}
+@media(max-width:768px){
+  .service-content{grid-template-columns:1fr;gap:24px;padding:0 20px}
+  .service-left,.service-right{padding:24px}
+  .service-speed{font-size:64px}
+}
+/* Service 超长滚动（300帧对应长滚动距离） */
+.service-spacer{height:520vh;background:var(--white)}   /* 390vh→520vh 增加滚动距离降低滚轮灵敏度（等效每帧复制1.33次） */
+
+/* marquee 无限横向滚动标签 */
+.marquee{
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:28px 0;
+  overflow:hidden;
+  background:var(--white);
+}
+.marquee-track{
+  display:flex;
+  white-space:nowrap;
+  animation:marquee 40s linear infinite;
+  width:max-content;
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-item{
+  display:inline-flex;align-items:center;
+  font-family:var(--font-display);
+  font-size:clamp(28px,4vw,48px);
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  color:var(--text);
+  padding:0 32px;
+  transition:color .25s;
+}
+.marquee-item:hover{color:var(--accent)}
+.marquee-item .sep{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--accent);margin-left:32px;
+}
+@keyframes marquee{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+/* ============================================================
+   Section 3A: Intro 数据页码（白底 + 黑色数字跳动，居中展示）
+   对应第5段前半：排版好的黑色数字跳动和文字信息
+   ============================================================ */
+/* 第3→4页过渡：白→米白→白渐变 + 极细橙色分割线 */
+.intro-data-section::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:80px;
+  background:linear-gradient(to bottom, transparent 0%, #FAF8F5 50%, transparent 100%);
+  pointer-events:none;
+  z-index:1;
+}
+.intro-data-section::before{
+  content:'';
+  position:absolute;
+  left:50%;bottom:80px;
+  width:1px;height:40px;
+  background:var(--accent);
+  transform:translateX(-50%);
+  opacity:.6;
+  z-index:2;
+}
+.intro-data-section{
+  position:relative;
+  background:var(--white);
+  color:var(--text);
+  overflow:hidden;
+}
+/* 旋转苹果装饰元素（从首页移来，缩小50%，精度达标率正下方，最上层不淡化，透明底） */
+.intro-data-apple{
+  position:absolute;
+  right:5%;               /* 精度达标率卡片右侧偏内 */
+  top:42%;                /* 精度达标率卡片正下方一点 */
+  width:min(53vh,546px);  /* 缩小50% */
+  aspect-ratio:1;
+  z-index:10;             /* 最上层，高于数据内容 */
+  opacity:1;              /* 不淡化，苹果清晰可见 */
+  pointer-events:none;
+  transform:translateY(-50%);  /* 以top为中心定位 */
+  background:transparent;      /* 透明底，无黑圆框 */
+  /* 不设border-radius和overflow:hidden，不设蒙版，纯透明 */
+}
+.intro-data-apple-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;
+}
+@media(max-width:768px){
+  .intro-data-apple{ width:min(30vh,300px); right:0; top:40%; opacity:0.8; }
+}
+.intro-data-sticky{
+  position:sticky;top:0;
+  height:100vh;
+  display:flex;align-items:stretch;justify-content:center;
+  max-width:var(--maxw);margin:0 auto;
+  padding:80px 40px 60px;
+  box-sizing:border-box;
+}
+/* 数据页栅格：3行 × 4列，铺满整个视口 */
+.intro-data{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  grid-template-rows:auto 1fr auto;
+  gap:24px 32px;
+  width:100%;
+  align-content:space-between;
+}
+/* 主数字（左上，超大） */
+.intro-data-hero{
+  grid-column:1/3;
+  grid-row:1/2;
+  border-top:2px solid var(--border-bold);
+  padding-top:20px;
+  display:flex;flex-direction:column;justify-content:flex-start;
+}
+.intro-data-hero .intro-data-value{
+  font-size:clamp(96px,16vw,200px);
+  line-height:.9;
+  margin-bottom:8px;
+}
+.intro-data-hero .intro-data-desc{
+  font-size:13px;
+  color:var(--text-soft);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+/* 次要数据卡片（右上2×2） */
+.intro-data-card{
+  border-top:1px solid var(--border-bold);
+  padding-top:16px;
+  display:flex;flex-direction:column;justify-content:flex-start;
+}
+.intro-data-card .intro-data-value{
+  font-size:clamp(40px,5.5vw,72px);
+  line-height:1;
+  margin-bottom:8px;
+}
+.intro-data-card .intro-data-desc{
+  font-size:12px;
+  color:var(--text-soft);
+  letter-spacing:.05em;
+  line-height:1.4;
+}
+/* 工艺趣味数据（左下，宽幅，3列均分） */
+.intro-data-craft{
+  grid-column:1/3;
+  grid-row:3/4;
+  border-top:1px solid var(--border-bold);
+  padding-top:16px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.intro-data-craft-item{
+  display:flex;flex-direction:column;
+}
+.intro-data-craft-item .craft-num{
+  font-family:var(--font-display);
+  font-size:clamp(28px,3.5vw,44px);
+  line-height:1;
+  color:var(--text);
+  margin-bottom:6px;
+  font-variant-numeric:tabular-nums;
+}
+.intro-data-craft-item .craft-unit{
+  font-size:.4em;
+  color:var(--accent);
+  margin-left:4px;
+}
+.intro-data-craft-item .craft-label{
+  font-size:11px;
+  color:var(--text-soft);
+  letter-spacing:.05em;
+  line-height:1.4;
+}
+/* 时间轴工时分布（右下） */
+.intro-data-timeline{
+  grid-column:3/5;
+  grid-row:3/4;
+  border-top:1px solid var(--border-bold);
+  padding-top:16px;
+  display:flex;flex-direction:column;
+}
+.intro-data-timeline .tl-title{
+  font-size:11px;
+  color:var(--text-soft);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.intro-data-timeline .tl-bars{
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  height:60px;
+  margin-bottom:8px;
+}
+.intro-data-timeline .tl-bar{
+  flex:1;
+  background:var(--text);
+  position:relative;
+  min-height:6px;
+  transition:height .8s cubic-bezier(.2,.8,.2,1);
+}
+.intro-data-timeline .tl-bar.accent{background:var(--accent)}
+.intro-data-timeline .tl-labels{
+  display:flex;
+  gap:6px;
+  font-size:9px;
+  color:var(--text-soft);
+  letter-spacing:.03em;
+}
+.intro-data-timeline .tl-label{flex:1;text-align:center}
+/* 通用数字样式 */
+.intro-data-value{
+  font-family:var(--font-display);
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.intro-data-value .unit{font-size:.32em;color:var(--accent);margin-left:8px;letter-spacing:.05em}
+/* 关键数据橙色强调（98.2%精度、0事故） */
+.intro-data-value.highlight{color:var(--accent)}
+.intro-data-value.highlight .unit{color:var(--text)}
+.intro-data-desc{
+  font-size:14px;
+  color:var(--text-soft);
+  letter-spacing:.05em;
+}
+
+/* ============================================================
+   Section 3B: Intro 提升机下落（白底 + 提升机载货台从顶部下落到底部）
+   对应第5段后半：提升机立柱不变，载货台和托盘货物由网页顶端往下掉
+   ============================================================ */
+.intro-lift-section{
+  position:relative;
+  background:var(--white);
+  color:var(--text);
+  /* 不能用 overflow:hidden —— 会导致子元素 .intro-lift-sticky 的 position:sticky 失效 */
+}
+.intro-lift-sticky{
+  position:sticky;top:0;
+  height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  max-width:var(--maxw);margin:0 auto;
+  padding:0 40px;
+}
+/* === 白页大标题：什么是提升机？（上英下中，首页标题字，幕布完全遮盖后隐藏） === */
+.lift-title{
+  position:fixed;             /* fixed：相对视口居中，不受sticky吸顶爬坡影响 */
+  inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  gap:clamp(14px,2.4vh,26px);
+  z-index:9990;               /* 置顶：盖过黑色幕布(9980) */
+  pointer-events:none;
+  will-change:opacity;
+}
+.lift-title-en{
+  font-family:var(--font-display);
+  font-size:clamp(44px,7.2vw,110px);
+  line-height:1.02;
+  letter-spacing:-.01em;
+  color:#111;
+}
+.lift-title-en em{
+  font-style:normal;
+  color:#111;                 /* 纯黑：不使用品牌橙点缀 */
+}
+.lift-title-cn{
+  font-family:var(--font-display);
+  font-size:clamp(22px,3.2vw,44px);
+  letter-spacing:.3em;        /* 中文拉宽字距，与超粗英文形成排版对比 */
+  text-indent:.3em;           /* 抵消末字字距，保持视觉居中 */
+  color:#111;
+}
+@media(max-width:768px){
+  .lift-title-cn{letter-spacing:.18em;text-indent:.18em}
+}
+/* === 提升机黑色幕布（fixed全屏覆盖，从右往左滑入） === */
+.lift-curtain{
+  position:fixed;
+  top:0;left:0;
+  width:100vw;height:100vh;
+  background:rgb(25,25,25);     /* 与提升机首帧颜色一致，衔接无缝 */
+  z-index:9980;                  /* 高于普通内容，低于入场overlay和cursor */
+  pointer-events:none;
+  /* 初始：在右侧视口外 */
+  transform:translateX(100%);
+  /* 雾气弥散：滑入前沿（左侧）羽化模糊，制造弥散感 */
+  -webkit-mask:linear-gradient(to right, transparent 0%, #000 18%, #000 100%);
+  mask:linear-gradient(to right, transparent 0%, #000 18%, #000 100%);
+  will-change:transform,opacity;
+}
+.lift-canvas{
+  position:fixed;
+  top:0;left:0;
+  width:100vw;height:100vh;
+  z-index:9979;                  /* 在幕布下方，幕布淡出后显示 */
+  display:none;
+  object-fit:cover;              /* img元素铺满视口，无白边 */
+  background:#FFFFFF;            /* 纯白底：canvas内部填白，与section白色背景一致 */
+}
+/* === 小电视（黑色货物方框内四图展示）：位置由JS按cover映射精确对齐方框 === */
+.lift-tv{
+  position:fixed;
+  z-index:9985;
+  pointer-events:none;
+  opacity:0;
+  padding:3.5%;                  /* 图片比电视小一圈，四边等距（3.5%宽度） */
+  box-sizing:border-box;
+  will-change:transform,opacity,filter;
+}
+.lift-tv canvas{
+  width:100%;height:100%;
+  display:block;
+  border-radius:6px;
+}
+/* CRT电视开机：中央横亮线展开+过曝闪光 */
+.lift-tv.on{opacity:1;animation:tvOn .55s cubic-bezier(.2,.8,.3,1) forwards}
+/* 关机：画面收缩成横亮线熄灭 */
+.lift-tv.off{opacity:1;animation:tvOff .32s ease-in forwards}
+@keyframes tvOn{
+  0%{transform:scale(.55,.012);filter:brightness(3.2)}
+  55%{transform:scale(1.03,1.02);filter:brightness(1.7)}
+  100%{transform:scale(1,1);filter:brightness(1)}
+}
+@keyframes tvOff{
+  0%{transform:scale(1,1);filter:brightness(1)}
+  55%{transform:scale(.75,.02);filter:brightness(2.4)}
+  100%{transform:scale(.55,.008);filter:brightness(3);opacity:0}
+}
+/* 橘黄荧光能量沿电视边缘跑圈，随后慢慢消散 */
+@property --tvangle{syntax:'<angle>';initial-value:0deg;inherits:false}
+.lift-tv-ring{
+  position:absolute;inset:0;
+  padding:4px;border-radius:8px;
+  background:conic-gradient(from var(--tvangle), transparent 0turn, transparent .70turn, rgba(255,61,0,.95) .85turn, #FFC9A3 .93turn, transparent 1turn);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite:exclude;
+  opacity:0;
+  pointer-events:none;
+}
+.lift-tv.on .lift-tv-ring{animation:tvRing 1.9s ease-out forwards}
+@keyframes tvRing{
+  0%{--tvangle:0deg;opacity:1}
+  60%{opacity:.85}
+  100%{--tvangle:560deg;opacity:0}
+}
+/* === 右侧堆积卡片UI（复刻ScrollStack堆积遮挡：中文左上角露出/英文大号排版） === */
+.lift-stack{
+  position:fixed;
+  right:0;top:50%;
+  z-index:9985;
+  width:440px;height:600px;        /* 纵向拉长100%（300→600） */
+  transform:translateY(-50%);
+  pointer-events:none;
+  transition:opacity .55s ease;    /* 离开提升机区域时整体优雅淡出 */
+}
+.lift-stack.fade{opacity:0}
+.lift-card{
+  position:absolute;
+  left:0;top:0;
+  width:100%;height:100%;
+  border-radius:28px;
+  padding:22px 32px;
+  box-sizing:border-box;
+  display:flex;flex-direction:column;align-items:flex-start;
+  transform:translateX(115%);      /* 初始：页面外右侧 */
+  transition:transform .6s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
+  /* 边缘阴影：体积感 */
+  box-shadow:0 24px 60px rgba(0,0,0,.30), 0 8px 20px rgba(0,0,0,.20);
+}
+.lift-card.warm{background:#FF774D}                     /* 第1/3张：橘红实底（色相减淡30%） */
+.lift-card.glass{                                        /* 第2/4张：透明毛玻璃 */
+  background:rgba(255,255,255,.10);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  backdrop-filter:blur(16px) saturate(1.3);
+  border:1px solid rgba(255,255,255,.30);
+}
+.lift-card-cn{
+  /* 中文：卡片左上角（堆积时恰好露出） */
+  font-family:'HYZhongHeiTi-197','PingFang SC',sans-serif;   /* 首页标题中文字体 */
+  font-size:24px;font-weight:800;color:#fff;line-height:1.3;
+  margin-bottom:12px;
+  text-shadow:0 2px 10px rgba(0,0,0,.18);
+}
+.lift-card-en{
+  /* 英文：中下部大号展示，大小写混排 */
+  font-family:'Anton','HYZhongHeiTi-197','Arial Black',sans-serif;   /* 首页标题字体 */
+  font-size:54px;line-height:1.1;color:#111;
+  letter-spacing:.01em;
+  margin-top:auto;
+}
+.lift-card.glass .lift-card-en{
+  text-shadow:0 0 20px rgba(255,255,255,.4), 0 2px 14px rgba(255,255,255,.22);   /* 深色背景上保证黑字可读 */
+}
+.lift-card-empty{background:#FF774D;box-shadow:0 24px 60px rgba(0,0,0,.20)}   /* 空卡补底色（原橘红基色已移入warm/glass材质类） */
+/* 卡片文字非静态：最新入栈卡片文字滑入显现 */
+.lift-card.top .lift-card-cn{animation:cnIn .5s .08s cubic-bezier(.22,1,.36,1) backwards}
+.lift-card.top .lift-card-en{animation:enIn .65s .16s cubic-bezier(.22,1,.36,1) backwards}
+@keyframes cnIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes enIn{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  .lift-stack{width:280px;height:384px}
+  .lift-card{padding:14px 20px;border-radius:18px}
+  .lift-card-en{font-size:30px}
+  .lift-card-cn{font-size:16px;margin-bottom:8px}
+}
+.intro-canvas-wrap{
+  position:relative;
+  width:100%;height:80vh;
+  display:grid;place-items:center;
+}
+.intro-canvas-wrap canvas{max-width:100%;max-height:100%}
+/* 占位 SVG（待替换 P2_5_intro_lift 序列帧） */
+.intro-placeholder{
+  width:100%;height:100%;
+  display:grid;place-items:center;
+  background:var(--white);
+}
+.intro-placeholder svg{width:50%;height:90%;opacity:.5}
+
+@media(max-width:768px){
+  .intro-data-sticky{padding:60px 20px 40px;height:auto;position:relative;min-height:100vh}
+  .intro-data{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto auto auto auto;
+    gap:20px 16px;
+  }
+  .intro-data-hero{grid-column:1/3;grid-row:1/2}
+  .intro-data-hero .intro-data-value{font-size:clamp(72px,18vw,120px)}
+  .intro-data-card .intro-data-value{font-size:clamp(32px,8vw,48px)}
+  .intro-data-craft{grid-column:1/3;grid-row:3/4;grid-template-columns:1fr 1fr;gap:16px}
+  .intro-data-craft-item .craft-num{font-size:clamp(24px,6vw,36px)}
+  .intro-data-timeline{grid-column:1/3;grid-row:4/5}
+  .intro-data-timeline .tl-bars{height:50px}
+  .intro-lift-sticky{padding:0 20px}
+  .intro-canvas-wrap{height:50vh}
+  .intro-placeholder svg{width:70%;height:80%}
+}
+.intro-data-spacer{height:100vh}
+.intro-lift-spacer{height:350vh}    /* 100vh→350vh：容纳幕布滑入+雾气弥散+91帧滚动播放 */
+
+/* ============================================================
+   Section 3C: 收尾动画（四向车从右→左开过画面，衔接提升机末帧）
+   结构完全复刻提升机（intro-lift），无幕布（首帧=提升机末帧，天然衔接）
+   动画源：收尾.mov（透明底WebP，209帧）→ assets/ending_webp/
+   ============================================================ */
+.ending-section{
+  position:relative;
+  background:var(--white);       /* 与提升机白底一致，首帧天然衔接 */
+  color:var(--text);
+  z-index:5;                     /* 承接提升机白底，高于service */
+}
+.ending-sticky{
+  position:sticky;top:0;
+  height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  max-width:var(--maxw);margin:0 auto;
+  padding:0 40px;
+}
+/* 四向车序列帧Canvas（fixed全屏，透明底叠加在白底上） */
+.ending-canvas{
+  position:fixed;
+  top:0;left:0;
+  width:100vw;height:100vh;
+  z-index:9979;                  /* 与提升机canvas相同z-index */
+  display:none;
+  object-fit:cover;
+  background:transparent;        /* 透明底：四向车浮于白底之上 */
+}
+.ending-spacer{height:520vh}    /* 520vh：降低滚轮灵敏度；末段 canvas 淡出以露出下方经纬仪 */
+
+/* === 设备名称跟踪标签（进度58-65%，纯文字双语UI，复刻首页标题字色与lineUp动效） === */
+.dev-label{
+  position:fixed;
+  z-index:9981;
+  display:none;
+  text-align:center;
+  font-family:'HYZhongHeiTi-197','PingFang SC',sans-serif;   /* 首页标题字 */
+  color:#111;                    /* 复刻首页标题色 */
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  transition:opacity .35s ease, transform .35s ease;
+  will-change:opacity,transform;
+}
+/* 复刻首页标题.line lineUp：遮罩内文字由下滑入 */
+.dev-label .line{display:block;overflow:hidden}
+.dev-label .line span{
+  display:inline-block;
+  transform:translateY(110%);
+  animation:devLineUp .9s var(--ease) forwards;
+}
+.dev-label .line:nth-child(1) span{animation-delay:0s}
+.dev-label .line:nth-child(2) span{animation-delay:.12s}
+@keyframes devLineUp{to{transform:translateY(0)}}
+.dev-label .en{
+  font-size:15px;font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;      /* 首页标题同款大写 */
+}
+.dev-label .cn{
+  font-size:26px;font-weight:800;
+  letter-spacing:.04em;
+  margin-top:2px;
+}
+/* RotatingText式退场：整体上滑退出 */
+.dev-label.out{opacity:0;transform:translate(-50%,-92%)}
+@media(max-width:768px){
+  .dev-label .en{font-size:11px}
+  .dev-label .cn{font-size:18px}
+}
+
+@media(max-width:768px){
+  .ending-sticky{padding:0 20px}
+}
+
+/* ============================================================
+   Section 4: Theodolite（经纬仪交互页）
+   位置：四向车转场后的白屏页
+   设计：纯白底、无文字、大画幅 canvas；鼠标水平移动控制旋转帧，
+        垂直移动控制上下俯仰偏移，带阻尼平滑
+   ============================================================ */
+.theodolite-section{
+  position:relative;z-index:6;
+  min-height:100vh;
+  background:transparent;    /* 透明：露出底层fixed网格背景（经纬仪页） */
+  display:flex;
+  align-items:flex-start;    /* 顶部对齐 */
+  justify-content:center;
+  padding-top:4vh;           /* 增加顶部空间，避免上移后头部截断 */
+  overflow:hidden;
+}
+.theodolite-inner{
+  width:100%;
+  height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+}
+.theodolite-canvas{
+  position:relative;z-index:1;   /* 网格背景之上 */
+  height:96vh;               /* 再放大一点 */
+  width:auto;
+  max-width:98vw;
+  display:block;
+  background:transparent;
+  transform:translateY(-6vh); /* 继续上移，让经纬仪头部占据画面上方 */
+  will-change:transform;
+}
+@media(max-width:768px){
+  .theodolite-section{padding-top:1vh}
+  .theodolite-canvas{
+    height:90vh;
+    transform:translateY(-4vh)
+  }
+}
+
+/* === 经纬仪交互引导（苹果风胶囊毛玻璃：右侧垂直居中，进入浮现，3秒后淡出，左右移动立即淡出） === */
+.theodolite-hint{
+  position:absolute;
+  right:5%;top:50%;
+  transform:translateY(-50%) scale(.96);
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  pointer-events:none;
+  opacity:0;
+  z-index:10;
+  /* 胶囊毛玻璃浮层：与首页下滑引导同一套弹层语言 */
+  padding:34px 48px 30px;
+  border-radius:34px;
+  background:rgba(255,255,255,.55);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  backdrop-filter:blur(20px) saturate(1.4);
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow:0 24px 70px rgba(0,0,0,.10), 0 4px 16px rgba(0,0,0,.05);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+}
+.theodolite-hint.visible{opacity:1;transform:translateY(-50%) scale(1)}
+.theodolite-hint.hidden{
+  opacity:0;
+  transform:translateY(calc(-50% + 10px)) scale(1);
+}
+.theodolite-hint-icon{
+  width:110px;height:70px;
+  color:rgba(0,0,0,.72);
+  animation:hintSway 2.4s ease-in-out infinite;
+}
+.theodolite-hint-icon svg{width:100%;height:100%;overflow:visible}
+/* 左右箭头交替亮起，暗示双向移动 */
+.theodolite-hint-icon .arr-l{animation:arrL 2.4s ease-in-out infinite}
+.theodolite-hint-icon .arr-r{animation:arrR 2.4s ease-in-out infinite}
+@keyframes hintSway{
+  0%,100%{transform:translateX(-7px)}
+  50%{transform:translateX(7px)}
+}
+@keyframes arrL{
+  0%,100%{opacity:.22}
+  25%{opacity:1}
+}
+@keyframes arrR{
+  0%,100%{opacity:.22}
+  75%{opacity:1}
+}
+/* 文字：宽字距小标题，克制的黑 */
+.theodolite-hint-text{
+  font-family:var(--font-display);
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:.26em;
+  padding-left:.26em;          /* 平衡字距视觉中心 */
+  color:rgba(0,0,0,.72);
+  white-space:nowrap;
+}
+@media(max-width:768px){
+  .theodolite-hint{right:4%;padding:24px 32px 22px;border-radius:26px;gap:12px}
+  .theodolite-hint-icon{width:76px;height:48px}
+  .theodolite-hint-text{font-size:13px}
+}
+
+/* === GridMotion网格流动背景（fixed全页层：进度74.5-78流入，78-88灰度递增锁定） === */
+.global-grid-bg{
+  position:fixed;inset:0;
+  overflow:hidden;
+  z-index:6;                 /* 高于ending/经纬仪section白底(5/6同层DOM序靠前)，低于四向车canvas(9979) */
+  display:none;              /* 由滚动进度JS控制显隐 */
+  pointer-events:none;       /* 不拦截交互 */
+}
+.tg-rows{
+  position:absolute;left:50%;top:50%;
+  width:150vw;height:150vh;
+  transform:translate(-50%,-50%) rotate(-15deg);
+  transform-origin:center;
+  display:flex;flex-direction:column;gap:16px;
+}
+.tg-row{
+  will-change:transform;     /* 入场流入偏移（JS直控） */
+}
+.tg-row-move{
+  display:flex;gap:16px;
+  will-change:transform;     /* 鼠标横移惯性（gsap） */
+}
+.tg-item{
+  position:relative;
+  height:250px;min-width:300px;
+  flex-shrink:0;
+}
+.tg-card{
+  position:absolute;inset:0;
+  border-radius:10px;
+  background:#111 center/cover no-repeat;
+  box-shadow:0 10px 30px rgba(0,0,0,.22);
+}
+/* 中心白色径向渐晕：经纬仪/四向车区域提亮，网格向四周透出 */
+.tg-vignette{
+  position:absolute;inset:-2px;
+  background:radial-gradient(circle at 50% 42%,
+    rgba(255,255,255,.88) 0%,
+    rgba(255,255,255,.5) 32%,
+    rgba(255,255,255,0) 66%);
+}
+@media(max-width:768px){
+  .tg-rows{gap:12px}
+  .tg-row-move{gap:12px}
+  .tg-item{height:160px;min-width:210px}
+}
+
+/* ============================================================
+   Section 5: FAQ（黑底手风琴）
+   ============================================================ */
+.faq{
+  background:var(--bg-dark);
+  color:var(--text-on-dark);
+  padding:120px 0;
+}
+.faq-inner{
+  max-width:var(--maxw);margin:0 auto;padding:0 40px;
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:80px;
+}
+.faq-header{position:sticky;top:120px;align-self:start}
+.faq-list{display:flex;flex-direction:column}
+.faq-item{
+  border-bottom:1px solid var(--border-dark);
+  position:relative;
+}
+.faq-item-line{
+  position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:var(--border-dark);
+  transition:background-color .3s;
+}
+.faq-item.open .faq-item-line{background:var(--accent)}
+.faq-item-q{
+  display:flex;align-items:center;gap:24px;
+  width:100%;
+  padding:28px 0;
+  cursor:pointer;
+}
+.faq-item-num{
+  font-family:var(--font-mono);
+  font-size:14px;color:var(--text-note-dark);
+  width:48px;flex:none;
+}
+.faq-item-title{
+  flex:1;
+  font-size:18px;font-weight:500;
+  color:var(--text-soft-dark);
+  transition:color .3s;
+}
+.faq-item.open .faq-item-title{color:var(--white)}
+.faq-item-dot{
+  width:24px;height:24px;
+  flex:none;
+  position:relative;
+}
+/* +→× 旋转图标：两条线交叉，展开时旋转45°变× */
+.faq-item-dot::before,.faq-item-dot::after{
+  content:'';
+  position:absolute;top:50%;left:50%;
+  background:var(--text-note-dark);
+  transition:transform .35s var(--ease),background-color .3s;
+}
+.faq-item-dot::before{   /* 横线 */
+  width:14px;height:1.5px;
+  transform:translate(-50%,-50%);
+}
+.faq-item-dot::after{    /* 竖线 */
+  width:1.5px;height:14px;
+  transform:translate(-50%,-50%);
+}
+.faq-item.open .faq-item-dot::before,
+.faq-item.open .faq-item-dot::after{
+  background:var(--accent);
+}
+/* 展开时整个dot旋转45°，+变×；竖线消失（scaleY=0）只留横线作为×的一笔 */
+.faq-item.open .faq-item-dot::before{
+  transform:translate(-50%,-50%) rotate(45deg);
+}
+.faq-item.open .faq-item-dot::after{
+  transform:translate(-50%,-50%) rotate(45deg);
+}
+.faq-item-a{
+  display:none;
+  padding:0 0 28px 72px;
+  font-size:15px;color:var(--text-soft-dark);
+  line-height:1.8;
+}
+.faq-item.open .faq-item-a{display:block}
+@media(max-width:768px){
+  .faq-inner{grid-template-columns:1fr;gap:40px;padding:0 20px}
+  .faq-header{position:relative;top:0}
+  .faq-item-a{padding-left:48px}
+}
+
+/* ============================================================
+   Section 9: Footer（白底）
+   ============================================================ */
+.footer{
+  background:var(--white);
+  color:var(--text);
+  padding:100px 0 40px;
+}
+.footer-inner{
+  max-width:var(--maxw);margin:0 auto;padding:0 40px;
+}
+.footer-top{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:60px;
+  padding-bottom:60px;
+  border-bottom:1px solid var(--border-bold);
+  margin-bottom:32px;
+}
+.footer-brand .logo{margin-bottom:20px}
+.footer-brand p{color:var(--text-soft);font-size:14px;max-width:32ch}
+.footer-col h4{
+  font-family:var(--font-display);
+  font-size:14px;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:20px;color:var(--text);
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.footer-col a{
+  font-size:14px;color:var(--text-soft);
+  transition:color .25s;
+  position:relative;
+}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+  font-size:13px;color:var(--text-mid);
+}
+@media(max-width:768px){
+  .footer-top{grid-template-columns:1fr 1fr;gap:32px;padding:0 20px 40px}
+  .footer-brand{grid-column:1/-1}
+  .footer-inner{padding:0 20px}
+}
+
+/* ============================================================
+   通用动画类
+   ============================================================ */
+.fade-up{
+  opacity:0;transform:translateY(40px);
+  transition:opacity .8s var(--ease),transform .8s var(--ease);
+}
+.fade-up.in{opacity:1;transform:translateY(0)}
+
+/* 滚动进度指示器 */
+.scroll-progress{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--accent);
+  z-index:200;
+  transform-origin:left;
+  transform:scaleX(0);
+  transition:transform .1s;
+}
+
+/* ============================================================
+   UI交互细节补充（8项）—— 对照原站拉片 02_拉片报告
+   ============================================================ */
+
+/* 1. 文字 mask 揭示（translateY + overflow:hidden）原站 .home-hero-title .line span */
+.reveal-mask{display:block;overflow:hidden}
+.reveal-mask>span{display:inline-block;transform:translateY(110%);transition:transform 1s var(--ease)}
+.reveal-mask.in>span{transform:translateY(0)}
+.reveal-mask.delay-1>span{transition-delay:.1s}
+.reveal-mask.delay-2>span{transition-delay:.2s}
+.reveal-mask.delay-3>span{transition-delay:.3s}
+
+/* 2. 文字横向滑入（translate 100vw）原站 .home-service-label */
+.slide-in{opacity:0;transform:translateX(60vw);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.slide-in.in{opacity:1;transform:translateX(0)}
+.slide-in.from-left{transform:translateX(-60vw)}
+
+/* 3. 负 margin 层叠覆盖（section间衔接）原站 .home-service-main margin-top:-35vh */
+.intro-data-section{margin-top:-25vh;z-index:5;position:relative}
+.intro-lift-section{position:relative;z-index:5}
+
+/* 4. 可编辑区域标记（hover显示✎） */
+[data-editable]{position:relative}
+[data-editable]:hover::after{
+  content:'✎ 可编辑';
+  position:absolute;top:-8px;right:-8px;
+  background:var(--accent);color:#fff;
+  font-size:9px;padding:2px 6px;border-radius:3px;
+  font-family:var(--font-mono);pointer-events:none;z-index:50;
+  white-space:nowrap;
+}
+
+/* 占位标签（标注待替换素材） */
+.placeholder-tag{
+  position:absolute;top:16px;left:16px;
+  background:var(--accent);color:var(--white);
+  font-size:10px;font-weight:700;letter-spacing:.1em;
+  padding:4px 10px;border-radius:4px;
+  z-index:10;
+  font-family:var(--font-mono);
+}
+/* === Strands WebGL发光光带入场动画 === */
+.intro-overlay{
+  position:fixed;inset:0;
+  z-index:9999;
+  background:#000;
+  pointer-events:auto;
+  transition:opacity .8s ease;
+}
+.intro-overlay.done{
+  pointer-events:none;
+  opacity:0;
+}
+/* 黑色雾气阴影边缘：四周暗、中心亮，烘托光带 */
+.intro-overlay::after{
+  content:'';
+  position:absolute;inset:0;
+  pointer-events:none;
+  background:radial-gradient(ellipse 65% 55% at 50% 42%,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,0) 35%,
+    rgba(0,0,0,.55) 70%,
+    rgba(0,0,0,.92) 100%);
+  z-index:2;
+}
+.strands-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:block;
+  z-index:1;
+}
+.intro-logo{
+  position:absolute;
+  top:30%;left:50%;             /* 文字往上挪，腾出光带展示空间 */
+  transform:translate(-50%,-50%) scale(.8);
+  font-family:'Anton',Impact,sans-serif;
+  font-size:clamp(40px,7vw,96px);   /* Eavan.Lu比AS/RS长，字号略缩 */
+  color:#fff;
+  letter-spacing:.1em;             /* 字间距略缩适配长文字 */
+  opacity:0;
+  text-shadow:0 0 40px rgba(118,200,255,.6),0 0 80px rgba(255,66,66,.3);
+  transition:opacity .8s ease .4s,transform 1s cubic-bezier(.2,.8,.2,1) .4s;
+  pointer-events:none;
+  z-index:3;
+  white-space:nowrap;
+}
+.intro-logo.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+}
+/* === 加载进度指示（右下角，与入场UI同风格：Anton+青色光晕） === */
+.intro-load{
+  position:absolute;
+  right:clamp(20px,3.2vw,44px);
+  bottom:clamp(18px,3.2vh,38px);
+  z-index:3;
+  text-align:right;
+  opacity:0;
+  animation:introLoadIn .9s ease .8s forwards;
+  pointer-events:none;
+}
+@keyframes introLoadIn{ to{opacity:1} }
+.intro-load-label{
+  font-family:'Anton',Impact,sans-serif;
+  font-size:10px;
+  letter-spacing:.5em;
+  text-indent:.5em;
+  color:rgba(255,255,255,.42);
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+.intro-load-num{
+  font-family:'Anton',Impact,sans-serif;
+  font-size:clamp(22px,2.6vw,34px);
+  color:rgba(255,255,255,.95);
+  letter-spacing:.06em;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 0 24px rgba(118,200,255,.5);
+  line-height:1;
+}
+.intro-load-bar{
+  width:clamp(120px,15vw,190px);
+  height:1px;
+  background:rgba(255,255,255,.14);
+  margin:9px 0 0 auto;
+  position:relative;
+  overflow:hidden;
+}
+.intro-load-bar i{
+  position:absolute;left:0;top:0;bottom:0;
+  width:0%;
+  background:linear-gradient(90deg,rgba(118,200,255,.85),#fff);
+  box-shadow:0 0 12px rgba(118,200,255,.8);
+  transition:width .35s ease;
+}
+/* === 几何科技风自定义光标（圆线+点图标） === */
+body{cursor:none}
+a,button,input,textarea,select,[role="button"]{cursor:none}
+.tech-cursor{
+  position:fixed;top:0;left:0;
+  width:32px;height:32px;
+  z-index:9998;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  will-change:transform;
+  mix-blend-mode:difference;
+}
+.tech-cursor svg{
+  width:32px;height:32px;
+  display:block;
+}
+.tech-cursor .ring-outer{
+  transform-origin:16px 16px;
+  animation:techSpin 8s linear infinite;
+}
+@keyframes techSpin{
+  to{transform:rotate(360deg)}
+}
+.tech-cursor.over-interactive svg .ring-inner{
+  animation:techPulse .6s ease-in-out infinite alternate;
+}
+@keyframes techPulse{
+  0%{opacity:.5;r:7}
+  100%{opacity:1;r:9}
+}
+@media (hover:none) and (pointer:coarse){
+  body{cursor:auto}
+  a,button,input,textarea,select{cursor:auto}
+  .tech-cursor{display:none}
+}
+
+/* === 滚动提示器（点线风格圆框鼠标滚轮+总进度圆环） === */
+.scroll-hint{
+  position:fixed;
+  right:32px;bottom:32px;
+  width:56px;height:56px;
+  z-index:9997;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .4s ease;
+}
+.scroll-hint.visible{opacity:1}
+.scroll-hint .progress-ring{
+  position:absolute;top:0;left:0;
+  width:56px;height:56px;
+  transform:rotate(-90deg);
+}
+.scroll-hint .progress-ring circle{
+  fill:none;
+  stroke-width:1.5;
+}
+.scroll-hint .progress-ring .ring-bg{
+  stroke:rgba(0,0,0,.15);
+}
+.scroll-hint .progress-ring .ring-fg{
+  stroke:var(--accent);
+  stroke-dasharray:163.36;   /* 2π×26 */
+  stroke-dashoffset:163.36;
+  transition:stroke-dashoffset .15s linear;
+}
+.scroll-hint .wheel-icon{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:18px;height:28px;
+  border:1.5px solid var(--text);
+  border-radius:9px;
+}
+.scroll-hint .wheel-icon::before{
+  content:'';
+  position:absolute;top:6px;left:50%;
+  width:2px;height:6px;
+  background:var(--text);
+  transform:translateX(-50%);
+  animation:wheelDot 1.6s ease-in-out infinite;
+}
+@keyframes wheelDot{
+  0%{top:6px;opacity:1}
+  60%{top:14px;opacity:.3}
+  100%{top:6px;opacity:1}
+}
+.scroll-hint .pct-text{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,30px);
+  font-family:var(--font-display);
+  font-size:9px;
+  color:var(--text-soft);
+  letter-spacing:.1em;
+  white-space:nowrap;
+}
+@media(max-width:768px){
+  .scroll-hint{right:16px;bottom:16px;width:44px;height:44px}
+  .scroll-hint .progress-ring{width:44px;height:44px}
+  .scroll-hint .progress-ring .ring-bg,.scroll-hint .progress-ring .ring-fg{stroke-width:2}
+  .scroll-hint .wheel-icon{width:14px;height:22px;border-radius:7px}
+  .scroll-hint .pct-text{font-size:8px;transform:translate(-50%,24px)}
+}
+
+/* === 首页下滑引导（苹果风：正中放大滚轮图标+三重向下箭头+宽字距文字） === */
+.scroll-guide{
+  position:fixed;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%) scale(.94);
+  z-index:9996;
+  display:flex;flex-direction:column;align-items:center;
+  pointer-events:none;
+  opacity:0;
+  /* 胶囊毛玻璃浮层：压在标题上仍清晰可读（苹果弹层语言） */
+  padding:38px 60px 34px;
+  border-radius:36px;
+  background:rgba(255,255,255,.52);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  backdrop-filter:blur(20px) saturate(1.4);
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow:0 24px 70px rgba(0,0,0,.10), 0 4px 16px rgba(0,0,0,.05);
+  transition:opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+}
+.scroll-guide.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.scroll-guide.hide{opacity:0;transform:translate(-50%,-58%) scale(1)}
+/* 大滚轮图标（右下角小图标放大2倍：56→112px） */
+.scroll-guide .sg-icon{position:relative;width:112px;height:112px}
+.scroll-guide .sg-ring{
+  position:absolute;inset:0;
+  transform:rotate(-90deg);
+}
+.scroll-guide .sg-ring circle{
+  fill:none;
+  stroke:rgba(0,0,0,.16);
+  stroke-width:1.2;
+}
+.scroll-guide .sg-wheel{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:36px;height:56px;
+  border:2px solid var(--text);
+  border-radius:18px;
+}
+.scroll-guide .sg-wheel::before{
+  content:'';
+  position:absolute;top:12px;left:50%;
+  width:3px;height:12px;
+  background:var(--text);
+  transform:translateX(-50%);
+  border-radius:2px;
+  animation:sgWheelDot 1.6s ease-in-out infinite;
+}
+@keyframes sgWheelDot{
+  0%{top:12px;opacity:1}
+  60%{top:30px;opacity:.3}
+  100%{top:12px;opacity:1}
+}
+/* 三重向下箭头：波浪脉冲（依次亮起） */
+.scroll-guide .sg-chevrons{
+  margin-top:20px;
+  stroke:rgba(0,0,0,.6);
+  stroke-width:1.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.scroll-guide .sg-chevrons polyline{animation:sgChev 1.8s ease-in-out infinite}
+.scroll-guide .sg-chevrons .c2{animation-delay:.18s}
+.scroll-guide .sg-chevrons .c3{animation-delay:.36s}
+@keyframes sgChev{
+  0%,100%{opacity:.18}
+  45%{opacity:.85}
+}
+/* 文字：宽字距小标题，克制的黑 */
+.scroll-guide .sg-text{
+  margin-top:12px;
+  font-family:var(--font-display);
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:.3em;
+  padding-left:.3em;           /* 平衡字距视觉中心 */
+  color:rgba(0,0,0,.7);
+  white-space:nowrap;
+}
+/* 子元素依次浮现（图标→箭头→文字） */
+.scroll-guide .sg-icon,.scroll-guide .sg-chevrons,.scroll-guide .sg-text{
+  opacity:0;
+  transition:opacity .7s ease;
+}
+.scroll-guide.show .sg-icon{opacity:1;transition-delay:.05s}
+.scroll-guide.show .sg-chevrons{opacity:1;transition-delay:.35s}
+.scroll-guide.show .sg-text{opacity:1;transition-delay:.55s}
+@media(max-width:768px){
+  .scroll-guide .sg-icon{width:88px;height:88px}
+  .scroll-guide .sg-wheel{width:28px;height:44px;border-radius:14px}
+  .scroll-guide .sg-text{font-size:14px}
+}
+
+/* ============================================================
+   名片页：左视频 + 右 FlowingMenu 信息区
+   ============================================================ */
+.card-video-section{
+  position:relative;
+  z-index:7;                 /* 高于fixed网格背景(6)：滚入时覆盖灰化网格 */
+  width:100%;
+  min-height:100vh;
+  background:#0d0d0d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.card-video-wrap{
+  position:relative;
+  width:100%;
+  height:100vh;
+  display:flex;
+  align-items:stretch;
+  justify-content:center;
+  gap:0;
+}
+.card-video-col{
+  width:50%;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.card-video{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:transparent;
+}
+.card-video-controls{
+  position:absolute;
+  right:40px;
+  bottom:40px;
+  display:flex;
+  gap:18px;
+  padding:16px 20px;
+  border-radius:999px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(20px);
+  transition:opacity .5s, transform .5s var(--ease);
+  z-index:10;
+}
+.card-video-controls.visible{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+.card-video-btn{
+  padding:14px 28px;
+  border:1px solid var(--accent);
+  background:rgba(255,85,0,.18);
+  color:#fff;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.06em;
+  border-radius:999px;
+  cursor:pointer;
+  text-shadow:0 0 10px rgba(255,85,0,.8);
+  box-shadow:0 0 16px rgba(255,85,0,.45), inset 0 0 16px rgba(255,85,0,.2);
+  animation:cardBtnPulse 2s ease-in-out infinite;
+  transition:all .25s;
+}
+.card-video-btn:nth-child(2){animation-delay:1s}
+@keyframes cardBtnPulse{
+  0%,100%{box-shadow:0 0 16px rgba(255,85,0,.45), inset 0 0 16px rgba(255,85,0,.2)}
+  50%{box-shadow:0 0 28px rgba(255,85,0,.75), inset 0 0 22px rgba(255,85,0,.35)}
+}
+.card-video-btn:hover{
+  background:var(--accent);
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 0 36px rgba(255,85,0,.8), inset 0 0 24px rgba(255,85,0,.4);
+}
+/* 信息区（FlowingMenu 风格） */
+.card-info{
+  width:50%;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:10vh 4vw 10vh 2vw;
+  position:relative;
+  overflow:hidden;
+}
+.card-info-head{
+  padding:0 0 3vh 0;
+  border-bottom:1px solid rgba(255,255,255,.18);
+}
+.card-info-title{
+  font-family:var(--font-display);
+  font-size:clamp(24px,3.4vh,44px);
+  color:#fff;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  line-height:1.1;
+}
+.card-info-title .dot{color:var(--accent)}
+.card-info-sub{
+  font-family:var(--font-body);
+  font-size:clamp(12px,1.5vh,15px);
+  color:rgba(255,255,255,.45);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  margin-top:.8vh;
+}
+.card-info-item{
+  position:relative;
+  flex:1;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:2vw;
+  border-top:1px solid rgba(255,255,255,.16);
+  cursor:pointer;
+  overflow:hidden;
+  text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.card-info-label{
+  font-family:var(--font-display);
+  font-size:clamp(22px,3.2vh,40px);
+  color:#fff;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  line-height:1.1;
+  display:flex;
+  align-items:baseline;
+  gap:1vw;
+}
+.card-info-label .cn{
+  font-family:var(--font-cn-display);
+  font-size:.45em;
+  color:var(--accent);
+  letter-spacing:.2em;
+}
+.card-info-value{
+  font-family:var(--font-body);
+  font-size:clamp(13px,1.8vh,17px);
+  color:rgba(255,255,255,.7);
+  letter-spacing:.04em;
+  text-align:right;
+  white-space:nowrap;
+}
+.card-info-marquee{
+  position:absolute;
+  top:0;left:0;width:100%;height:100%;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  pointer-events:none;
+  transform:translateY(101%);
+  z-index:2;
+}
+.card-info-marquee-inner{
+  display:flex;
+  width:max-content;
+  height:100%;
+  align-items:center;
+  will-change:transform;
+}
+.card-info-marquee-part{
+  display:flex;
+  align-items:center;
+  flex-shrink:0;
+  height:100%;
+}
+.card-info-marquee-text{
+  font-family:var(--font-display);
+  color:#111;
+  font-size:clamp(22px,3.2vh,40px);
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  padding:0 2.5vw;
+  line-height:1;
+}
+.card-info-marquee-img{
+  width:clamp(120px,12vw,200px);
+  height:60%;
+  min-height:40px;
+  border-radius:999px;
+  background-size:cover;
+  background-position:center;
+  margin:0 1.5vw;
+  flex-shrink:0;
+}
+.card-info[data-animated="false"] .card-info-item{
+  opacity:0;
+  transform:translateY(24px);
+}
+@media(max-width:900px){
+  .card-video-wrap{flex-direction:column}
+  .card-video-col{width:100%;height:56vh}
+  .card-info{
+    width:100%;
+    height:auto;
+    min-height:60vh;
+    padding:5vh 6vw;
+    gap:2vh;
+  }
+  .card-info-item{flex:none;min-height:9vh;padding:0 1vw}
+  .card-video-controls{right:16px;bottom:20px;gap:10px;padding:12px 14px}
+  .card-video-btn{padding:11px 18px;font-size:13px}
+}
+
+/* ============================================================
+   Section 9: Thank You（白底 + 黑虚线盒子交互）
+   ============================================================ */
+.footer{
+  position:relative;
+  background:var(--white);
+  color:var(--text);
+  min-height:60vh;
+  overflow:hidden;
+}
+.thank-you-scene{
+  position:relative;
+  width:100%;min-height:60vh;
+  display:flex;align-items:center;justify-content:center;
+}
+.thank-you-grid{
+  position:absolute;inset:0;
+  display:grid;
+  place-items:stretch;
+  gap:3px;
+  z-index:1;
+  user-select:none;
+  touch-action:pan-y;
+}
+.ty-cube{
+  position:relative;
+  width:100%;height:100%;
+  transform-style:preserve-3d;
+  will-change:transform;
+  pointer-events:auto;
+}
+.ty-cube-face{
+  position:absolute;inset:0;
+  background:var(--white);
+  border:1px dashed #000;
+  box-sizing:border-box;
+  backface-visibility:hidden;
+}
+.ty-cube-face:nth-child(1){transform:translateZ(calc(var(--cube-half,24px)))}
+.ty-cube-face:nth-child(2){transform:rotateY(90deg) translateZ(calc(var(--cube-half,24px)))}
+.ty-cube-face:nth-child(3){transform:rotateY(180deg) translateZ(calc(var(--cube-half,24px)))}
+.ty-cube-face:nth-child(4){transform:rotateY(-90deg) translateZ(calc(var(--cube-half,24px)))}
+.ty-cube-face:nth-child(5){transform:rotateX(90deg) translateZ(calc(var(--cube-half,24px)))}
+.ty-cube-face:nth-child(6){transform:rotateX(-90deg) translateZ(calc(var(--cube-half,24px)))}
+.ty-cube.solid .ty-cube-face{
+  background:#000;
+  border-color:#000;
+}
+.ty-cube.ripple .ty-cube-face{background:#f5f5f5;border-color:#000}
+.ty-cube.solid.ripple .ty-cube-face{background:#333;border-color:#333}
+
+/* ---------- 隐身水印层（截图/打印防伪） ---------- */
+.watermark-layer{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  pointer-events:none;
+  opacity:.02;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Ctext x='50%25' y='50%25' font-size='16' font-family='Arial, sans-serif' fill='%23000' text-anchor='middle' dominant-baseline='middle' transform='rotate(-30 200 200)'%3E© 2026 陆椰文 Eavan · 安装仿真动画工程师 · 未经授权禁止转载%3C/text%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:200px 200px;
+}
+@media print{
+  .watermark-layer{opacity:.08}
+}
+</style>
+</head>
+<body>
+<!-- 隐身水印层 -->
+<div class="watermark-layer" aria-hidden="true"></div>
+<!-- Strands WebGL发光光带入场动画 -->
+<div id="introOverlay" class="intro-overlay">
+  <canvas id="strandsCanvas" class="strands-canvas"></canvas>
+  <div class="intro-logo" id="introLogo">Eavan.Lu</div>
+  <div class="intro-load" id="introLoad" aria-hidden="true">
+    <div class="intro-load-label">Loading</div>
+    <div class="intro-load-num" id="introLoadNum">0%</div>
+    <div class="intro-load-bar"><i id="introLoadBar"></i></div>
+  </div>
+</div>
+<!-- 几何科技风自定义光标（圆线+点图标） -->
+<div id="techCursor" class="tech-cursor" aria-hidden="true">
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <circle class="ring-outer" cx="16" cy="16" r="13" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1" stroke-dasharray="4 3"/>
+    <circle class="ring-inner" cx="16" cy="16" r="7" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".8"/>
+    <circle cx="16" cy="16" r="1.6" fill="#fff"/>
+    <line x1="16" y1="2" x2="16" y2="6" stroke="rgba(255,255,255,.7)" stroke-width="1"/>
+    <line x1="16" y1="26" x2="16" y2="30" stroke="rgba(255,255,255,.7)" stroke-width="1"/>
+    <line x1="2" y1="16" x2="6" y2="16" stroke="rgba(255,255,255,.7)" stroke-width="1"/>
+    <line x1="26" y1="16" x2="30" y2="16" stroke="rgba(255,255,255,.7)" stroke-width="1"/>
+  </svg>
+</div>
+
+<!-- 滚动提示器（点线风格圆框鼠标滚轮+总进度圆环） -->
+<div id="scrollHint" class="scroll-hint" aria-hidden="true">
+  <svg class="progress-ring" viewBox="0 0 56 56">
+    <circle class="ring-bg" cx="28" cy="28" r="26"/>
+    <circle class="ring-fg" cx="28" cy="28" r="26" id="progressRingFg"/>
+  </svg>
+  <div class="wheel-icon"></div>
+  <div class="pct-text" id="scrollPctText">0%</div>
+</div>
+
+<!-- 首页下滑引导（IP第一轮招手后于正中浮现：大滚轮图标+向下三重箭头+文字；滚动后消失） -->
+<div id="scrollGuide" class="scroll-guide" aria-hidden="true">
+  <div class="sg-icon">
+    <svg class="sg-ring" viewBox="0 0 112 112">
+      <circle cx="56" cy="56" r="54"/>
+    </svg>
+    <div class="sg-wheel"></div>
+  </div>
+  <svg class="sg-chevrons" width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <polyline class="c1" points="6,4 20,14 34,4"/>
+    <polyline class="c2" points="6,16 20,26 34,16"/>
+    <polyline class="c3" points="6,28 20,38 34,28"/>
+  </svg>
+  <div class="sg-text">请滑动滚轮</div>
+</div>
+
+<!-- 滚动进度条 -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ============================================================
+     Section 1: Hero（黑底 + 立体库旋转）
+     对应第1段：旋转地球仪 → 立体库360°旋转
+     ============================================================ -->
+<section class="hero" id="hero">
+  <div class="hero-sticky">
+    <!-- 大树UI：0813底图（降对比度）+ 光标聚光灯揭示层 -->
+    <div class="hero-base-bg" id="heroBaseBg"></div>
+    <div class="hero-reveal-layer" id="heroRevealLayer"></div>
+    <canvas id="heroSpotlightCanvas"></canvas>
+
+    <!-- 右侧 个人IP视频（WebP序列帧透明底，FFmpeg colorkey扣白底） -->
+    <div class="hero-canvas-wrap" id="heroCanvasWrap">
+      <video class="hero-star-video" id="heroStarVideo" autoplay muted loop playsinline preload="auto">
+        <source src="role/MindVideo_20260820172806_956.mp4" type="video/mp4">
+      </video>
+      <!-- 鼠标轨迹局部glitch场（RGB分离+形体撕裂） -->
+      <div class="hero-glitch-field" id="heroGlitchField"></div>
+      <!-- 数据划痕粒子溅射层（鼠标移动到苹果上时飞溅） -->
+      <canvas class="hero-sparks-canvas" id="heroSparksCanvas"></canvas>
+    </div>
+
+    <!-- 左下角文字 -->
+    <div class="hero-content">
+      <div class="hero-eyebrow" data-editable>
+        <span class="pulse"></span>
+        <span>SMART STORAGE INSTALLATION · 智能仓储安装工艺</span>
+      </div>
+      <h1 class="hero-title" data-editable>
+        <span class="line"><span>EVERY BEAM</span></span>
+        <span class="line"><span><span class="accent">PRECISELY</span> PLACED</span></span>
+      </h1>
+      <p class="hero-subtitle" data-editable>
+        Eavan · 智能仓储安装工艺工程师。立体库 · 四向穿梭库 · 堆垛机系统的全链路安装工艺。从首根立柱到最终调试，每一步都有标准化的三维仿真工艺动画支撑。
+      </p>
+      <div class="hero-cta">
+        <a href="#service" class="btn btn-primary">什么是立库？ <span class="arrow">→</span></a>
+        <a href="#intro" class="btn btn-ghost">了解我 <span class="arrow">→</span></a>
+        <a href="#cardVideoSection" class="btn btn-ghost">我的名片 <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-spacer"></div>
+</section>
+
+<!-- ============================================================
+     Section 2: Service（白底→黑底 + 吊装/穿梭车/俯视进库）
+     对应第2-3-4段：一镜到底 300帧
+     ============================================================ -->
+<section class="service" id="service">
+  <div class="service-sticky">
+    <div class="service-canvas-wrap">
+      <!-- P1 一镜到底拼贴画版：3个场景叠放，ScrollTrigger驱动切换 -->
+      <div class="service-scenes">
+        <!-- 第0层：水墨渐变背景（纯白→淡灰→中灰→深灰，SVG turbulence晕染+极简噪点） -->
+        <div class="service-ink-bg" id="serviceInkBg"></div>
+        <svg class="service-ink-svg" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 400 300">
+          <defs>
+            <filter id="inkTurb" x="-5%" y="-5%" width="110%" height="110%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="3" seed="7" result="turb"/>
+              <feColorMatrix in="turb" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.07 0"/>
+              <feComposite in2="SourceGraphic" operator="in"/>
+            </filter>
+            <filter id="inkGrain" x="0" y="0" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="3" result="grain"/>
+              <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0"/>
+              <feComposite in2="SourceGraphic" operator="in"/>
+            </filter>
+          </defs>
+          <rect width="400" height="300" fill="#fff" filter="url(#inkTurb)"/>
+          <rect width="400" height="300" fill="#fff" filter="url(#inkGrain)"/>
+        </svg>
+        <!-- 第2层：透明底3D序列帧Canvas（吊车取货→放货架→四向车运送→俯视翻转，120帧WebP） -->
+        <canvas class="service-canvas-bg" id="serviceCanvasBg" width="1920" height="1080"></canvas>
+        <!-- 第3层：英文标签UI（阶段驱动+区域定位，Anton超粗体） -->
+        <div class="service-labels" id="serviceLabels">
+          <div class="srv-label" data-label="crane"    style="top:18%;right:8%"><span class="lbl-num">01</span><span class="lbl-en">CRANE</span><span class="lbl-desc">LIFTING MODULE</span></div>
+          <div class="srv-label" data-label="rack"     style="top:12%;left:50%;transform:translateX(-50%)"><span class="lbl-num">02</span><span class="lbl-en">RACK</span><span class="lbl-desc">PRECISE PLACEMENT</span></div>
+          <div class="srv-label" data-label="shuttle"  style="bottom:22%;right:10%"><span class="lbl-num">03</span><span class="lbl-en">SHUTTLE</span><span class="lbl-desc">TRANSPORTING</span></div>
+          <div class="srv-label" data-label="topview"  style="bottom:14%;left:50%;transform:translateX(-50%)"><span class="lbl-num">04</span><span class="lbl-en">TOP VIEW</span><span class="lbl-desc">ENTERING AS/RS</span></div>
+        </div>
+        <!-- 场景1：吊车吊货架模组（正侧面） -->
+        <div class="service-scene" id="scene1" data-stage="01" data-label="Crane Lift">
+          <svg viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <!-- 地面 -->
+            <line x1="0" y1="600" x2="1600" y2="600" stroke="#ccc" stroke-width="2"/>
+            <g stroke="#ddd"><line x1="0" y1="610" x2="1600" y2="610" stroke-dasharray="8 12"/></g>
+            <!-- 吊车（起重机） -->
+            <g id="crane1" stroke="#333" stroke-width="3" fill="none">
+              <!-- 底座 -->
+              <rect x="100" y="560" width="80" height="40" fill="#666"/>
+              <!-- 立柱 -->
+              <line x1="140" y1="560" x2="140" y2="120"/>
+              <!-- 吊臂（斜向上） -->
+              <line x1="140" y1="120" x2="600" y2="120"/>
+              <line x1="140" y1="140" x2="580" y2="140"/>
+              <line x1="140" y1="120" x2="140" y2="140"/>
+              <line x1="600" y1="120" x2="580" y2="140"/>
+              <!-- 支撑桁架 -->
+              <line x1="140" y1="160" x2="200" y2="120"/>
+              <line x1="140" y1="200" x2="260" y2="120"/>
+              <line x1="140" y1="240" x2="320" y2="120"/>
+              <line x1="140" y1="280" x2="380" y2="120"/>
+              <line x1="140" y1="320" x2="440" y2="120"/>
+              <line x1="140" y1="360" x2="500" y2="120"/>
+            </g>
+            <!-- 吊绳+吊钩（滚动驱动上下移动） -->
+            <g id="craneHook1">
+              <line x1="550" y1="130" x2="550" y2="350" stroke="#333" stroke-width="2" stroke-dasharray="4 4"/>
+              <rect x="535" y="350" width="30" height="10" fill="#333"/>
+            </g>
+            <!-- 货架模组（被吊着，滚动驱动下放） -->
+            <g id="rackModule1" stroke="#FF5500" stroke-width="2.5" fill="none">
+              <rect x="450" y="360" width="200" height="120" fill="rgba(255,85,0,0.05)"/>
+              <!-- 模组内部穿梭轨道 -->
+              <line x1="460" y1="400" x2="640" y2="400" stroke="#FF5500" stroke-width="1.5"/>
+              <line x1="460" y1="420" x2="640" y2="420" stroke="#FF5500" stroke-width="1" opacity="0.5"/>
+              <line x1="460" y1="440" x2="640" y2="440" stroke="#FF5500" stroke-width="1.5"/>
+              <line x1="460" y1="460" x2="640" y2="460" stroke="#FF5500" stroke-width="1" opacity="0.5"/>
+              <!-- 模组立柱 -->
+              <line x1="450" y1="360" x2="450" y2="480"/>
+              <line x1="650" y1="360" x2="650" y2="480"/>
+              <line x1="500" y1="360" x2="500" y2="480" opacity="0.4"/>
+              <line x1="550" y1="360" x2="550" y2="480" opacity="0.4"/>
+              <line x1="600" y1="360" x2="600" y2="480" opacity="0.4"/>
+            </g>
+            <!-- 标注 -->
+            <text x="450" y="340" font-family="monospace" font-size="13" fill="#999">货架模组（含四向车穿梭轨道）</text>
+            <text x="100" y="100" font-family="monospace" font-size="13" fill="#999">吊车</text>
+            <!-- 下放箭头 -->
+            <g id="liftArrow1" stroke="#FF5500" stroke-width="2" opacity="0.6">
+              <line x1="700" y1="360" x2="700" y2="580" stroke-dasharray="3 5"/>
+              <polygon points="694,570 706,570 700,585" fill="#FF5500"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- 场景2：四向车驮托盘过轨道（正侧面） -->
+        <div class="service-scene" id="scene2" data-stage="02" data-label="Shuttle Transport">
+          <svg viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <!-- 地面 -->
+            <line x1="0" y1="600" x2="1600" y2="600" stroke="#ccc" stroke-width="2"/>
+            <!-- 轨道（水平） -->
+            <g stroke="#333" stroke-width="3" fill="none">
+              <line x1="200" y1="560" x2="1400" y2="560"/>
+              <line x1="200" y1="575" x2="1400" y2="575" opacity="0.5"/>
+              <!-- 轨道支柱 -->
+              <line x1="300" y1="575" x2="300" y2="600"/>
+              <line x1="500" y1="575" x2="500" y2="600"/>
+              <line x1="700" y1="575" x2="700" y2="600"/>
+              <line x1="900" y1="575" x2="900" y2="600"/>
+              <line x1="1100" y1="575" x2="1100" y2="600"/>
+              <line x1="1300" y1="575" x2="1300" y2="600"/>
+            </g>
+            <!-- 四向车+托盘（滚动驱动从左到右） -->
+            <g id="shuttle2">
+              <!-- 托盘货物 -->
+              <rect x="-30" y="490" width="80" height="40" fill="#333" stroke="#FF5500" stroke-width="2"/>
+              <rect x="-25" y="480" width="70" height="10" fill="#FF5500" opacity="0.6"/>
+              <!-- 四向车车身 -->
+              <rect x="-40" y="530" width="100" height="30" fill="#FF5500" stroke="#333" stroke-width="2" rx="3"/>
+              <!-- 轮子 -->
+              <circle cx="-25" cy="563" r="8" fill="#333"/>
+              <circle cx="45" cy="563" r="8" fill="#333"/>
+              <!-- 车身细节 -->
+              <line x1="-20" y1="535" x2="20" y2="535" stroke="#fff" stroke-width="1" opacity="0.5"/>
+            </g>
+            <!-- 起点/终点标注 -->
+            <text x="200" y="540" font-family="monospace" font-size="13" fill="#999">起点</text>
+            <text x="1340" y="540" font-family="monospace" font-size="13" fill="#999">终点</text>
+            <text x="700" y="450" font-family="monospace" font-size="13" fill="#999">四向车驮托盘货物过轨道（正侧面）</text>
+            <!-- 运动方向箭头 -->
+            <g stroke="#FF5500" stroke-width="2" opacity="0.4">
+              <line x1="400" y1="640" x2="1200" y2="640" stroke-dasharray="6 8"/>
+              <polygon points="1190,632 1190,648 1210,640" fill="#FF5500"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- 场景3：俯视部分由Canvas动画帧76-95接管（原SVG简笔画已删除） -->
+        <div class="service-scene" id="scene3" data-stage="03" data-label="Top View Entry"></div>
+      </div>
+      <canvas id="serviceCanvas" style="display:none"></canvas>
+    </div>
+
+    <div class="service-content">
+      <div class="service-left" data-editable>
+        <div class="service-stage-label">STAGE <span class="service-stage-label-dynamic" style="display:inline;transition:opacity .2s,transform .2s">Crane Lift</span></div>
+        <div class="service-speed" id="serviceSpeed">01</div>
+        <div class="service-stage-desc">
+          吊车将货架模组精准就位，四向车沿轨道驮运托盘货物，俯视视角下子轨与主轨平滑转换，货物进入四向库场景。
+        </div>
+      </div>
+      <div class="service-right slide-in" data-editable>
+        <div class="service-stage-label" style="color:var(--text-soft-dark)">PROCESS · 全链路工艺</div>
+        <h3 style="font-family:var(--font-display);font-size:32px;margin-bottom:16px;text-transform:uppercase"> Crane · Shuttle · Transfer</h3>
+        <p style="color:var(--text-soft-dark);font-size:14px;line-height:1.7">
+          从吊装就位到子轨主轨转换，每一步都按官方工艺标准三维仿真，确保现场施工与设计图纸零偏差。
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- T2: Service→Why clip-path斜切（从左上向右下，视频拉片实测方向） -->
+  <div class="service-clip-bottom"></div>
+  <div class="service-spacer"></div>
+</section>
+
+<!-- marquee 无限滚动 -->
+<div class="marquee">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item">AS/RS<span class="sep"></span></span>
+    <span class="marquee-item">四向穿梭车<span class="sep"></span></span>
+    <span class="marquee-item">堆垛机<span class="sep"></span></span>
+    <span class="marquee-item">输送线<span class="sep"></span></span>
+    <span class="marquee-item">货架系统<span class="sep"></span></span>
+    <span class="marquee-item">智能调度<span class="sep"></span></span>
+    <!-- 重复一遍实现无缝循环 -->
+    <span class="marquee-item">AS/RS<span class="sep"></span></span>
+    <span class="marquee-item">四向穿梭车<span class="sep"></span></span>
+    <span class="marquee-item">堆垛机<span class="sep"></span></span>
+    <span class="marquee-item">输送线<span class="sep"></span></span>
+    <span class="marquee-item">货架系统<span class="sep"></span></span>
+    <span class="marquee-item">智能调度<span class="sep"></span></span>
+  </div>
+</div>
+
+<!-- ============================================================
+     Section 3A: Intro 数据页码（白底 + 黑色数字跳动）
+     对应第5段前半：排版好的黑色数字跳动和文字信息显示
+     ============================================================ -->
+<section class="intro-data-section" id="intro">
+  <div class="intro-data-sticky">
+    <!-- 旋转苹果装饰元素（WebP序列帧透明底，FFmpeg colorkey扣黑底，精度达标率正下方） -->
+    <div class="intro-data-apple">
+      <canvas class="intro-data-apple-canvas" id="introDataAppleCanvas" width="960" height="960"></canvas>
+    </div>
+    <!-- 玻璃金属流体点缀（multiply融入白底，剪切多边形） -->
+    <div class="fluid-accent mid-right" style="background:url('assets/fluid/fluid_1.png') center/contain no-repeat"></div>
+    <!-- T1: Hero→Intro 3D元素延续层（立体库从黑底延续到白底，随滚动渐隐） -->
+    <div class="intro-continuation" id="introContinuation">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#111" stroke-width="1.2" fill="none" opacity="0.9">
+          <rect x="80" y="120" width="240" height="160"/>
+          <rect x="80" y="120" width="240" height="40"/>
+          <rect x="80" y="160" width="240" height="40"/>
+          <rect x="80" y="200" width="240" height="40"/>
+          <rect x="80" y="240" width="240" height="40"/>
+          <line x1="80" y1="120" x2="80" y2="280"/>
+          <line x1="140" y1="120" x2="140" y2="280"/>
+          <line x1="200" y1="120" x2="200" y2="280"/>
+          <line x1="260" y1="120" x2="260" y2="280"/>
+          <line x1="320" y1="120" x2="320" y2="280"/>
+          <rect x="180" y="210" width="40" height="20" fill="#111" opacity="0.6"/>
+          <line x1="100" y1="100" x2="100" y2="300" stroke-width="1.5"/>
+          <rect x="95" y="180" width="20" height="15" fill="#111"/>
+        </g>
+        <circle cx="200" cy="200" r="180" stroke="#111" stroke-width="0.8" fill="none" opacity="0.3" stroke-dasharray="4 4"/>
+      </svg>
+    </div>
+    <div class="intro-data">
+      <!-- 主数字（左上，超大）：3年工业动画制作经验 -->
+      <div class="intro-data-hero" data-editable>
+        <div class="intro-data-value" data-target="3" data-suffix="+">0<span class="unit">YEARS</span></div>
+        <div class="intro-data-desc">年工业动画制作经验 · Every frame precisely crafted since 2023</div>
+      </div>
+
+      <!-- 右上2×2次要数据卡片 -->
+      <div class="intro-data-card" data-editable>
+        <div class="intro-data-value" data-target="120" data-suffix="+">0<span class="unit">PROJECTS</span></div>
+        <div class="intro-data-desc">工艺仿真内容交付<br>Process simulation content delivered</div>
+      </div>
+      <div class="intro-data-card" data-editable>
+        <div class="intro-data-value highlight" data-target="98.2" data-suffix="%">0<span class="unit">PRECISION</span></div>
+        <div class="intro-data-desc">工艺动画达标率<br>Process animation pass rate</div>
+      </div>
+      <div class="intro-data-card" data-editable>
+        <div class="intro-data-value highlight" data-target="0" data-suffix="">0<span class="unit">ACCIDENT</span></div>
+        <div class="intro-data-desc">安全事故记录<br>Safety incident record</div>
+      </div>
+      <div class="intro-data-card" data-editable>
+        <div class="intro-data-value" data-target="21" data-suffix="">0<span class="unit">CITIES</span></div>
+        <div class="intro-data-desc">城市现场足迹<br>On-site city footprint</div>
+      </div>
+
+      <!-- 左下：工艺趣味数据（3列） -->
+      <div class="intro-data-craft">
+        <div class="intro-data-craft-item" data-editable>
+          <div class="craft-num" data-target="500" data-suffix="+">0<span class="craft-unit">个</span></div>
+          <div class="craft-label">三维资产构建数<br>3D assets built</div>
+        </div>
+        <div class="intro-data-craft-item" data-editable>
+          <div class="craft-num" data-target="100" data-suffix="">0<span class="craft-unit">%</span></div>
+          <div class="craft-label">客户满意度<br>Client satisfaction rate</div>
+        </div>
+        <div class="intro-data-craft-item" data-editable>
+          <div class="craft-num" data-target="2300" data-suffix="+">0<span class="craft-unit">小时</span></div>
+          <div class="craft-label">三维仿真工时<br>3D simulation hours</div>
+        </div>
+      </div>
+
+      <!-- 右下：时间轴工时分布（6阶段柱状图） -->
+      <div class="intro-data-timeline" data-editable>
+        <div class="tl-title">单项目工时分布 · Workload by phase</div>
+        <div class="tl-bars" id="tlBars">
+          <div class="tl-bar" data-h="18"></div>
+          <div class="tl-bar" data-h="32"></div>
+          <div class="tl-bar accent" data-h="85"></div>
+          <div class="tl-bar" data-h="60"></div>
+          <div class="tl-bar" data-h="45"></div>
+          <div class="tl-bar" data-h="28"></div>
+        </div>
+        <div class="tl-labels">
+          <div class="tl-label">基础<br>打点</div>
+          <div class="tl-label">立柱<br>吊装</div>
+          <div class="tl-label">货架<br>总装</div>
+          <div class="tl-label">设备<br>就位</div>
+          <div class="tl-label">电气<br>接线</div>
+          <div class="tl-label">联调<br>验收</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="intro-data-spacer"></div>
+</section>
+
+<!-- ============================================================
+     Section 3B: Intro 提升机下落（白底 + 黑色幕布转场 + 91帧序列帧滚动驱动）
+     对应第5段后半：提升机立柱不变，载货台和托盘货物由网页顶端往下掉
+     流程：① 滚动到第4页底 ② 幕布从右滑入覆盖全屏（首帧=幕布色衔接）
+          ③ 雾气弥散显示首帧 ④ 91帧跟随滚轮滚动播放（效仿四向立库）
+     ============================================================ -->
+<section class="intro-lift-section" id="intro-lift">
+  <div class="intro-lift-sticky">
+    <!-- 白页大标题：什么是提升机？（上英下中，幕布完全遮盖后隐藏） -->
+    <div class="lift-title" id="liftTitle" aria-hidden="true">
+      <div class="lift-title-en">What Is a <em>Vertical Lift</em>?</div>
+      <div class="lift-title-cn">什么是提升机？</div>
+    </div>
+    <!-- 黑色幕布（fixed全屏，从右往左滑入，带雾气弥散mask） -->
+    <div class="lift-curtain" id="liftCurtain"></div>
+    <!-- 提升机序列帧Canvas（fixed全屏，幕布淡出后显示） -->
+    <canvas id="liftCanvas" class="lift-canvas"></canvas>
+    <!-- 小电视：黑色货物方框内展示四张图片（进度45/48/51/53%触发，CRT开关机+能量环+由下至上粒子切换） -->
+    <div class="lift-tv" id="liftTv"><canvas id="liftTvCanvas" width="460" height="522"></canvas><div class="lift-tv-ring"></div></div>
+    <!-- 右侧堆积卡片UI（ScrollStack堆积遮挡：1/3橘红、2/4毛玻璃，中文左上角/英文大号排版） -->
+    <div class="lift-stack" id="liftStack">
+      <div class="lift-card warm">
+        <div class="lift-card-cn">采集一线资料</div>
+        <div class="lift-card-en">Field Data<br>Collection</div>
+      </div>
+      <div class="lift-card glass">
+        <div class="lift-card-cn">建模现场设备和场景</div>
+        <div class="lift-card-en">On-site Equipment<br>&amp; Scene Modeling</div>
+      </div>
+      <div class="lift-card warm">
+        <div class="lift-card-cn">复刻安装过程、工艺</div>
+        <div class="lift-card-en">Recreating<br>Installation &amp; Process</div>
+      </div>
+      <div class="lift-card glass">
+        <div class="lift-card-cn">海外部门多元化输出</div>
+        <div class="lift-card-en">Diversified<br>Overseas Output</div>
+      </div>
+      <!-- 无内容空卡：常驻半截在页面外，堆叠底座 -->
+      <div class="lift-card lift-card-empty"></div>
+    </div>
+  </div>
+  <div class="intro-lift-spacer"></div>
+</section>
+
+<!-- ============================================================
+     Section 3C: 收尾动画（四向车从右往左开过画面）
+     紧接提升机末帧，首帧=提升机末帧，天然无缝衔接
+     动画源：收尾.mov（透明底WebP，209帧）→ assets/ending_webp/
+     结构完全复刻提升机（intro-lift），无幕布
+     ============================================================ -->
+<section class="ending-section" id="ending">
+  <div class="ending-sticky">
+    <!-- 四向车序列帧Canvas（fixed全屏，透明底直接叠加在白底上） -->
+    <canvas id="endingCanvas" class="ending-canvas"></canvas>
+    <!-- 核心能力标签已删除：避免遮挡四向车转场画面 -->
+  </div>
+  <div class="ending-spacer"></div>
+</section>
+
+<!-- ============================================================
+     Section 4: Theodolite（经纬仪交互页）
+     位置：四向车滑过屏幕转场后的白屏页
+     交互：canvas 序列帧；鼠标 X 控制水平旋转帧，Y 控制上下俯仰，带阻尼
+     ============================================================ -->
+<!-- GridMotion网格流动底层背景：fixed全页层，进度74.5-78流入衔接四向车转场，78-88灰度递增 -->
+<div class="global-grid-bg" id="theoGrid" aria-hidden="true">
+  <div class="tg-rows" id="tgRows"></div>
+  <div class="tg-vignette"></div>
+</div>
+
+<section class="theodolite-section" id="theodolite">
+  <div class="theodolite-inner">
+    <canvas id="theodoliteCanvas" class="theodolite-canvas"></canvas>
+    <!-- 交互引导：进入界面后浮现，3秒淡出，左右移动立即淡出 -->
+    <div class="theodolite-hint" id="theodoliteHint">
+      <div class="theodolite-hint-icon">
+        <svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <!-- 鼠标轮廓 -->
+          <rect x="22" y="3" width="20" height="34" rx="10"/>
+          <line x1="32" y1="8" x2="32" y2="15"/>
+          <!-- 左右箭头 -->
+          <path class="arr-l" d="M14 15 L8 20 L14 25"/>
+          <path class="arr-r" d="M50 15 L56 20 L50 25"/>
+        </svg>
+      </div>
+      <span class="theodolite-hint-text">左右移动 · 转动经纬仪</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Section 5: 个人名片（左视频 + 右 FlowingMenu 信息区）
+     ============================================================ -->
+<section class="card-video-section" id="cardVideoSection">
+  <div class="card-video-wrap">
+    <div class="card-video-col">
+      <video id="cardVideo" class="card-video" src="./名片(1).mp4" poster="assets/card_poster.webp" playsinline muted preload="auto"></video>
+      <div class="card-video-controls" id="cardVideoControls">
+        <button class="card-video-btn" id="cardReplayBtn">重新播放</button>
+        <button class="card-video-btn" id="cardShowBtn">名片显示</button>
+      </div>
+    </div>
+    <div class="card-info" id="cardInfo" data-animated="false">
+      <div class="card-info-head">
+        <div class="card-info-title">CONTACT<span class="dot">.</span></div>
+        <div class="card-info-sub">SMART STORAGE INSTALLATION ENGINEER</div>
+      </div>
+
+      <a class="card-info-item" href="#" data-img="assets/fluid/fluid_1.png">
+        <span class="card-info-label">NAME<span class="cn">姓名</span></span>
+        <span class="card-info-value">陆椰文 · EAVAN</span>
+        <div class="card-info-marquee">
+          <div class="card-info-marquee-inner">
+            <div class="card-info-marquee-part">
+              <span class="card-info-marquee-text">NAME · 陆椰文 EAVAN</span>
+              <div class="card-info-marquee-img" style="background-image:url('assets/fluid/fluid_1.png')"></div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-info-item" href="#" data-img="assets/truck_webp/frame_060.webp">
+        <span class="card-info-label">ROLE<span class="cn">职位</span></span>
+        <span class="card-info-value">（安装仿真）动画工程师</span>
+        <div class="card-info-marquee">
+          <div class="card-info-marquee-inner">
+            <div class="card-info-marquee-part">
+              <span class="card-info-marquee-text">ROLE · 安装仿真动画工程师</span>
+              <div class="card-info-marquee-img" style="background-image:url('assets/truck_webp/frame_060.webp')"></div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-info-item" href="#" data-img="assets/theodolite_frames/frame_0080.webp">
+        <span class="card-info-label">PHONE<span class="cn">电话</span></span>
+        <span class="card-info-value">180 5196 6165</span>
+        <div class="card-info-marquee">
+          <div class="card-info-marquee-inner">
+            <div class="card-info-marquee-part">
+              <span class="card-info-marquee-text">PHONE · 180 5196 6165</span>
+              <div class="card-info-marquee-img" style="background-image:url('assets/theodolite_frames/frame_0080.webp')"></div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-info-item" href="#" data-img="assets/ending_webp/frame_100.webp">
+        <span class="card-info-label">EMAIL<span class="cn">邮箱</span></span>
+        <span class="card-info-value">2179756262@qq.com</span>
+        <div class="card-info-marquee">
+          <div class="card-info-marquee-inner">
+            <div class="card-info-marquee-part">
+              <span class="card-info-marquee-text">EMAIL · 2179756262@qq.com</span>
+              <div class="card-info-marquee-img" style="background-image:url('assets/ending_webp/frame_100.webp')"></div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-info-item" href="#" data-img="assets/apple_frames/frame_0010.webp">
+        <span class="card-info-label">SOFT<span class="cn">软件</span></span>
+        <span class="card-info-value">Maya / C4D / Blender / Pr / Ae / Ps / Ai</span>
+        <div class="card-info-marquee">
+          <div class="card-info-marquee-inner">
+            <div class="card-info-marquee-part">
+              <span class="card-info-marquee-text">SOFT · MAYA C4D BLENDER</span>
+              <div class="card-info-marquee-img" style="background-image:url('assets/apple_frames/frame_0010.webp')"></div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-info-item" href="#" data-img="assets/lift_webp/frame_045.webp">
+        <span class="card-info-label">MORE<span class="cn">其他</span></span>
+        <span class="card-info-value">Figma / ComfyUI / Trae / CAD / ZBrush</span>
+        <div class="card-info-marquee">
+          <div class="card-info-marquee-inner">
+            <div class="card-info-marquee-part">
+              <span class="card-info-marquee-text">MORE · FIGMA COMFYUI TRAE</span>
+              <div class="card-info-marquee-img" style="background-image:url('assets/lift_webp/frame_045.webp')"></div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Section 9: Thank You（白底 + 黑虚线盒子交互背景，黑色实心盒子拼字）
+     ============================================================ -->
+<footer class="footer" id="footer">
+  <div class="thank-you-scene" id="thankYouScene">
+    <div class="thank-you-grid" id="thankYouGrid"></div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   JS 交互逻辑
+   ============================================================ */
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------- 1. 滚动进度条 ---------- */
+const progressBar = document.getElementById('scrollProgress');
+const scrollHint = document.getElementById('scrollHint');
+const progressRingFg = document.getElementById('progressRingFg');
+const scrollPctText = document.getElementById('scrollPctText');
+const RING_CIRC = 163.36;   // 2π×26
+let scrollHintShown = false;
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  const p = h > 0 ? window.scrollY / h : 0;
+  progressBar.style.transform = `scaleX(${p})`;
+  // 滚动提示器圆环进度
+  progressRingFg.style.strokeDashoffset = RING_CIRC * (1 - p);
+  scrollPctText.textContent = Math.round(p * 100) + '%';
+  // 滚动超过100px后显示提示器，到达底部前一直显示
+  if(!scrollHintShown && window.scrollY > 100){
+    scrollHint.classList.add('visible');
+    scrollHintShown = true;
+  }
+}, {passive:true});
+
+/* ---------- 2. FAQ 手风琴 ---------- */
+document.querySelectorAll('.faq-item-q').forEach(q=>{
+  q.addEventListener('click', ()=>{
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    // 单开模式：关闭所有
+    document.querySelectorAll('.faq-item').forEach(i=> i.classList.remove('open'));
+    if(!wasOpen){ item.classList.add('open'); }
+  });
+});
+
+/* ---------- 6. 通用 fade-up 进入动画 ---------- */
+gsap.utils.toArray('.fade-up').forEach(el=>{
+  gsap.fromTo(el,
+    {y:40, opacity:0},
+    {y:0, opacity:1, duration:.8, ease:'power2.out',
+     scrollTrigger:{trigger:el, start:'top 85%'}}
+  );
+});
+
+/* ---------- 7. Service 速度数字滚动驱动（mix-blend-mode 反色） ---------- */
+const serviceSpeed = document.getElementById('serviceSpeed');
+ScrollTrigger.create({
+  trigger:'.service',
+  start:'top top',
+  end:'bottom bottom',
+  scrub:true,
+  onUpdate(self){
+    const stage = Math.floor(self.progress * 3) + 1; // 1/2/3 阶段
+    const stageText = String(Math.min(stage,3)).padStart(2,'0');
+    if(serviceSpeed.textContent !== stageText){
+      serviceSpeed.textContent = stageText;
+    }
+  }
+});
+
+/* ---------- 8. Intro 数字计数动画 ---------- */
+document.querySelectorAll('.intro-data-value, .craft-num').forEach(el=>{
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const unitEl = el.querySelector('.unit, .craft-unit');
+  const unitHtml = unitEl ? unitEl.outerHTML : '';
+  // 初始显示0
+  el.innerHTML = '0' + unitHtml;
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 85%',
+    onEnter(){
+      gsap.to({val:0}, {
+        val: target,
+        duration: 2.2,
+        ease: 'power2.out',
+        onUpdate: function(){
+          const v = this.targets()[0].val;
+          // 大数字（>1000）用千分位逗号格式，小数保留1位
+          let display;
+          if(target % 1 !== 0){
+            display = v.toFixed(1);
+          } else if(target >= 1000){
+            display = Math.floor(v).toLocaleString('en-US');
+          } else {
+            display = Math.floor(v);
+          }
+          el.innerHTML = display + suffix + unitHtml;
+        }
+      });
+    }
+  });
+});
+
+/* ---------- 8b. Intro 时间轴柱状图动画 ---------- */
+ScrollTrigger.create({
+  trigger: '#tlBars',
+  start: 'top 85%',
+  once: true,
+  onEnter(){
+    document.querySelectorAll('#tlBars .tl-bar').forEach((bar, i)=>{
+      const h = parseFloat(bar.dataset.h) || 10;
+      gsap.fromTo(bar, {height:0}, {
+        height: h + '%',
+        duration: .9,
+        delay: i * 0.12,
+        ease: 'power3.out'
+      });
+    });
+  }
+});
+
+/* ---------- 10. Canvas 序列帧播放框架（待用户素材接入） ----------
+   通用函数：setupSequenceCanvas(canvasId, frameUrls, scrollConfig)
+   当用户提供PNG序列帧后，调用此函数即可接入滚动驱动播放
+*/
+function setupSequenceCanvas(canvasId, frameUrls, options){
+  options = options || {};
+  const canvas = document.getElementById(canvasId);
+  if(!canvas || !frameUrls || frameUrls.length === 0) return;
+  const ctx = canvas.getContext('2d');
+  canvas.style.display = 'block';
+
+  // 设置canvas尺寸
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = canvas.clientWidth * dpr;
+  canvas.height = canvas.clientHeight * dpr;
+
+  // 预加载帧
+  const frames = [];
+  let loaded = 0;
+  frameUrls.forEach((url, i)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      frames[i] = img;
+      loaded++;
+      if(loaded === 1) drawFrame(0); // 首帧加载完立即绘制
+    };
+    img.src = url;
+  });
+
+  function drawFrame(index){
+    if(!frames[index]) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(frames[index], 0, 0, canvas.width, canvas.height);
+  }
+
+  // 滚动驱动
+  const trigger = options.trigger || canvas.closest('section') || canvas.parentElement;
+  ScrollTrigger.create({
+    trigger: trigger,
+    start: options.start || 'top top',
+    end: options.end || 'bottom bottom',
+    scrub: options.scrub !== undefined ? options.scrub : 0.5,
+    onUpdate(self){
+      const idx = Math.floor(self.progress * (frames.length - 1));
+      drawFrame(idx);
+    }
+  });
+}
+
+/* 当用户素材就绪后，按以下方式接入：
+// 第1段 Hero 立体库旋转（120帧）
+// setupSequenceCanvas('heroCanvas', generateFrameUrls('assets/P0_1_hero_rotate_', 120, '.png'), {trigger:'.hero'});
+
+// 第2-4段 Service 一镜到底（300帧）
+// setupSequenceCanvas('serviceCanvas', generateFrameUrls('assets/P1_234_service_continuous_', 300, '.png'), {trigger:'.service'});
+
+// 第5段 Intro 提升机下落（150帧）
+// setupSequenceCanvas('introCanvas', generateFrameUrls('assets/P2_5_intro_lift_', 150, '.png'), {trigger:'.intro'});
+
+*/
+
+function generateFrameUrls(prefix, count, ext){
+  const urls = [];
+  for(let i=1; i<=count; i++){
+    urls.push(prefix + String(i).padStart(4,'0') + ext);
+  }
+  return urls;
+}
+
+/* ---------- 11. Hero Canvas 旋转占位动画（待序列帧替换） ---------- */
+// 在序列帧就绪前，用简单的CSS旋转占位SVG制造动效
+const heroPlaceholder = document.querySelector('.hero-placeholder svg');
+if(heroPlaceholder){
+  gsap.to(heroPlaceholder, {
+    rotation: 360,
+    duration: 30,
+    ease: 'none',
+    repeat: -1,
+    transformOrigin: '50% 50%'
+  });
+}
+
+/* ---------- 12. 卡片hover触摸反馈（移动端） ---------- */
+if('ontouchstart' in window){
+  document.querySelectorAll('.faq-item').forEach(el=>{
+    el.addEventListener('touchstart', ()=> el.classList.add('touch-active'), {passive:true});
+    el.addEventListener('touchend', ()=> setTimeout(()=> el.classList.remove('touch-active'), 150));
+  });
+}
+
+/* ---------- 13. UI交互细节补充：reveal-mask 文字揭示 + slide-in 横向滑入 ---------- */
+// 文字 mask 揭示：进入视口时加 .in 类触发 translateY(110%→0)
+gsap.utils.toArray('.reveal-mask').forEach(el=>{
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 88%',
+    onEnter: ()=> el.classList.add('in'),
+    onLeaveBack: ()=> el.classList.remove('in')
+  });
+});
+
+// 文字横向滑入：进入视口时加 .in 类
+gsap.utils.toArray('.slide-in').forEach(el=>{
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 90%',
+    onEnter: ()=> el.classList.add('in'),
+    onLeaveBack: ()=> el.classList.remove('in')
+  });
+});
+
+/* ---------- 14. Service 一镜到底：3场景切换 + 内部SVG动画（拼贴画版） ---------- */
+// 场景1: 吊车下放货架模组 | 场景2: 四向车驮托盘过轨道 | 场景3: 俯视图进库
+const stageLabels = ['Crane Lift','Shuttle Transport','Top View Entry'];
+const scenes = [document.getElementById('scene1'), document.getElementById('scene2'), document.getElementById('scene3')];
+const speedEl = document.getElementById('serviceSpeed');
+const labelEl = document.querySelector('.service-stage-label-dynamic');
+let curStage = -1;
+
+// 初始化场景1为active
+if(scenes[0]) scenes[0].classList.add('active');
+
+// === Service Canvas序列帧预加载（120帧WebP，透明底） ===
+(function(){
+  const canvas = document.getElementById('serviceCanvasBg');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  window.__truckCtx = ctx;
+  window.__truckFrames = [];
+  const total = 120;
+  // 分批预加载：首帧加载完成立即绘制，其余后台加载
+  // 修复：120帧并行加载时"第一个完成的帧"是随机中间帧，初始画面必须绑定 frame_001 本身
+  for(let i=0; i<total; i++){
+    const img = new Image();
+    img.src = 'assets/truck_webp/frame_' + String(i+1).padStart(3,'0') + '.webp';
+    window.__truckFrames[i] = img;
+    if(i === 0){
+      img.onload = ()=>{
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+    }
+  }
+  console.log('✅ Service序列帧预加载启动（120帧WebP，约29MB）');
+})();
+
+ScrollTrigger.create({
+  trigger:'.service',
+  start:'top top',
+  end:'bottom bottom',
+  scrub:true,
+  onUpdate(self){
+    const p = self.progress; // 0-1
+
+    // === 场景切换（带过渡区间，与SEG停留段对齐） ===
+    // 0-0.36: 场景1 | 0.36-0.72: 场景2 | 0.72-1: 场景3
+    // 阈值设在停留段内，场景切换时帧正好停留，过渡更自然
+    let stage;
+    if(p < 0.36) stage = 0;
+    else if(p < 0.72) stage = 1;
+    else stage = 2;
+
+    if(stage !== curStage){
+      curStage = stage;
+      scenes.forEach((s,i)=> s && s.classList.toggle('active', i === stage));
+      // Canvas全程可见（俯视部分由Canvas帧76-94接管，不再淡出）
+      // 更新数字和标签
+      if(speedEl){
+        const num = String(stage + 1).padStart(2, '0');
+        if(speedEl.textContent !== num){
+          speedEl.style.opacity = '0';
+          speedEl.style.transform = 'translateX(30px)';
+          setTimeout(()=>{
+            speedEl.textContent = num;
+            speedEl.style.opacity = '1';
+            speedEl.style.transform = 'translateX(0)';
+          }, 200);
+        }
+      }
+      if(labelEl && labelEl.textContent !== stageLabels[stage]){
+        labelEl.style.opacity = '0';
+        labelEl.style.transform = 'translateX(40px)';
+        setTimeout(()=>{
+          labelEl.textContent = stageLabels[stage];
+          labelEl.style.opacity = '1';
+          labelEl.style.transform = 'translateX(0)';
+        }, 200);
+      }
+    }
+
+    // === 第0层水墨渐变背景：4段平滑插值 纯白→淡灰→中灰→深灰 ===
+    // p: 0~0.15 #fff | 0.15~0.70 #fff→#e8e8e8 | 0.70~0.85 #e8e8e8→#999 | 0.85~1.0 #999→#3a3a3a
+    const inkBg = document.getElementById('serviceInkBg');
+    if(inkBg){
+      const lerp = (a,b,t)=>a+(b-a)*t;
+      const hex2rgb = h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+      const stops = [
+        {p:0.00, c:hex2rgb('#ffffff')},
+        {p:0.15, c:hex2rgb('#ffffff')},
+        {p:0.70, c:hex2rgb('#e8e8e8')},
+        {p:0.85, c:hex2rgb('#999999')},
+        {p:1.00, c:hex2rgb('#3a3a3a')}
+      ];
+      let rgb;
+      for(let i=0;i<stops.length-1;i++){
+        if(p >= stops[i].p && p <= stops[i+1].p){
+          const t = (p - stops[i].p)/(stops[i+1].p - stops[i].p);
+          rgb = stops[i].c.map((v,k)=>Math.round(lerp(v, stops[i+1].c[k], t)));
+          break;
+        }
+      }
+      if(rgb){
+        inkBg.style.backgroundColor = 'rgb(' + rgb.join(',') + ')';
+        // 深色阶段标签和文字颜色自适应
+        const dark = rgb[0] < 128;
+        document.documentElement.style.setProperty('--srv-fg', dark ? '#fff' : '#111');
+      }
+    }
+
+    // === 第1层文字框动效：前期原大小，滚几下后跳角落缩小50%淡化50% ===
+    const contentEl = document.querySelector('.service-content');
+    if(contentEl){
+      // p<0.08原大小，0.08-0.15过渡到角落缩放，p>0.15保持角落
+      contentEl.classList.toggle('shrunk', p > 0.08);
+    }
+
+    // === 第2层Canvas序列帧绘制（分段映射120帧 + 关键帧停留复制） ===
+    // 分段：吊车取货→[停留]→放货架→[停留]→四向车→[停留]→俯视拓展
+    // 优化：增加停留段时间（等效复制帧），关键动作帧停留更久，降低视觉跳变感
+    if(window.__truckFrames && window.__truckCtx){
+      // 分段映射表：每段[ps,pe]映射帧[fs,fe]，停留段fs==fe
+      // 停留段从2.5%→3.5%，动作段帧变化更慢，关键帧"复制"更多次
+      const SEG = [
+        {ps:0.000, pe:0.120, fs:0,  fe:0},   // 前期静帧（缩短，腾出空间给停留段）
+        {ps:0.120, pe:0.340, fs:0,  fe:30},  // 吊车取货下放
+        {ps:0.340, pe:0.375, fs:30, fe:30},  // ◆转场1停留（3.5%，等效复制帧5帧时间）
+        {ps:0.375, pe:0.510, fs:30, fe:46},  // 放货架到位
+        {ps:0.510, pe:0.545, fs:46, fe:46},  // ◆转场2停留（3.5%）
+        {ps:0.545, pe:0.710, fs:46, fe:75},  // 四向车运送
+        {ps:0.710, pe:0.745, fs:75, fe:75},  // ◆转场3停留（3.5%，侧面→俯视翻转）
+        {ps:0.745, pe:1.000, fs:75, fe:119}  // 俯视拓展内容
+      ];
+      let frameIdx = 0;
+      for(const s of SEG){
+        if(p >= s.ps && p <= s.pe){
+          const t = (p - s.ps) / (s.pe - s.ps);
+          frameIdx = Math.round(s.fs + (s.fe - s.fs) * t);
+          break;
+        }
+      }
+      frameIdx = Math.max(0, Math.min(119, frameIdx));
+      const img = window.__truckFrames[frameIdx];
+      if(img && img.complete){
+        const c = window.__truckCtx, canvas = c.canvas;
+        c.clearRect(0,0,canvas.width,canvas.height);
+        c.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // === 第3层英文标签阶段驱动+区域定位（与SEG段对齐） ===
+    // 0.12~0.36: CRANE(右上) | 0.36~0.55: RACK(中上) | 0.55~0.72: SHUTTLE(右下) | 0.72~1.0: TOP VIEW(中下)
+    const labelWrap = document.getElementById('serviceLabels');
+    if(labelWrap){
+      const labels = labelWrap.querySelectorAll('.srv-label');
+      const stages = [
+        {key:'crane',    range:[0.12, 0.36]},
+        {key:'rack',     range:[0.36, 0.55]},
+        {key:'shuttle',  range:[0.55, 0.72]},
+        {key:'topview',  range:[0.72, 1.01]}
+      ];
+      labels.forEach(el=>{
+        const key = el.getAttribute('data-label');
+        const st = stages.find(s=>s.key===key);
+        if(!st) return;
+        // 进入区间前0.03预跳出，离开后0.03淡出
+        const show = p >= st.range[0] - 0.02 && p < st.range[1] + 0.02;
+        el.classList.toggle('show', show);
+      });
+    }
+  },
+  // === Bug 修复：回滚离开 service 区段时，恢复初始状态（避免屏幕黑屏） ===
+  onLeaveBack(){
+    // 重置水墨背景为纯白
+    const inkBg = document.getElementById('serviceInkBg');
+    if(inkBg){
+      inkBg.style.backgroundColor = '#ffffff';
+    }
+    document.documentElement.style.setProperty('--srv-fg', '#111');
+    // 重置场景为 scene1
+    if(curStage !== 0){
+      curStage = 0;
+      scenes.forEach((s,i)=> s && s.classList.toggle('active', i === 0));
+    }
+    // 重置速度数字和标签
+    if(speedEl){
+      speedEl.textContent = '01';
+      speedEl.style.opacity = '1';
+      speedEl.style.transform = 'translateX(0)';
+      speedEl.style.transition = 'opacity .2s, transform .2s';
+    }
+    if(labelEl){
+      labelEl.textContent = stageLabels[0];
+      labelEl.style.opacity = '1';
+      labelEl.style.transform = 'translateX(0)';
+    }
+    // 重置 Canvas 到首帧
+    if(window.__truckFrames && window.__truckCtx && window.__truckFrames[0] && window.__truckFrames[0].complete){
+      const c = window.__truckCtx, canvas = c.canvas;
+      c.clearRect(0,0,canvas.width,canvas.height);
+      c.drawImage(window.__truckFrames[0], 0, 0, canvas.width, canvas.height);
+    }
+    // 重置 service-content（移除角落缩小状态）
+    const contentEl = document.querySelector('.service-content');
+    if(contentEl) contentEl.classList.remove('shrunk');
+    // 重置所有标签隐藏
+    const labelWrap = document.getElementById('serviceLabels');
+    if(labelWrap){
+      labelWrap.querySelectorAll('.srv-label').forEach(el=> el.classList.remove('show'));
+    }
+  },
+  // 向下滚出 service 时也保持末态（自然过渡到 ending，不要黑屏）
+  onLeave(){
+    // 保持 service 末态：背景深灰 + 末帧 + 标签隐藏
+    // 防止 ScrollTrigger 自动 reset
+  }
+});
+
+/* ---------- 15. T1: Hero→Intro 3D元素延续层（立体库从黑底延续到白底，渐隐） ---------- */
+// 用页面滚动比例触发（sticky子元素的rect.top不变，用scrollY比例更可靠）
+const introCont = document.getElementById('introContinuation');
+if(introCont){
+  function updateT1(){
+    const sy = window.scrollY;
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    if(maxScroll <= 0) return;
+    const ratio = sy / maxScroll;
+    // Intro区在页面约18%-35%（实测pageHeight≈14000，Intro在2600-4900px）
+    const p = (ratio - 0.18) / 0.17;
+    const clamped = Math.max(0, Math.min(1, p));
+    // 0→0.3: 渐显（立体库从Hero延续进来）, 0.3→1: 渐隐（被Intro内容覆盖）
+    introCont.style.opacity = clamped < 0.3 ? (clamped / 0.3) : Math.max(0, 1 - ((clamped - 0.3) / 0.7));
+  }
+  window.addEventListener('scroll', updateT1, {passive:true});
+  updateT1();
+}
+
+/* ---------- 17. 个人IP视频（直接用video元素，不用抠像，白底与首页白底融合） ---------- */
+const heroStarVideo = document.getElementById('heroStarVideo');
+if(heroStarVideo){
+  heroStarVideo.addEventListener('loadeddata', () => {
+    console.log('✅ 个人IP视频已加载（直接video元素，白底与首页白底融合）');
+  });
+  // 确保自动播放（部分浏览器需要 play() 调用）
+  heroStarVideo.play().catch(()=>{});
+}
+
+/* ---------- 17a. 首页下滑引导：IP第一轮招手结束后，滚轮图标于正中放大浮现（苹果风），滚动后消失 ---------- */
+const scrollGuide = document.getElementById('scrollGuide');
+if(scrollGuide && heroStarVideo){
+  let sgPlayed = false;    // 视频已播过一轮（招手结束）
+  let sgShown = false;     // 引导已浮现
+  let sgDone = false;      // 引导已退场（不再出现）
+  // 检测loop回绕：已播过5.5s以上且currentTime回到开头 = 第一轮招手结束
+  heroStarVideo.addEventListener('timeupdate', () => {
+    if(sgDone) return;
+    if(!sgPlayed && heroStarVideo.currentTime > 5.5) sgPlayed = true;
+    if(sgPlayed && !sgShown && heroStarVideo.currentTime < 0.35){
+      if(window.scrollY > 60){ sgDone = true; return; }   // 用户已自行滚动：不引导
+      sgShown = true;
+      scrollGuide.classList.add('show');
+    }
+  }, {passive:true});
+  // 滚动后：引导淡出上浮（复位逻辑：右下角小图标随scrollY>100自动恢复职责）
+  window.addEventListener('scroll', () => {
+    if(sgShown && !sgDone && window.scrollY > 80){
+      sgDone = true;
+      scrollGuide.classList.add('hide');
+      setTimeout(()=>{ scrollGuide.style.display = 'none'; }, 950);
+    }
+  }, {passive:true});
+}
+
+/* ---------- 17b. 标题阻尼跟随+区域模糊（文字本身跟随鼠标+RGB分离） ---------- */
+const heroTitles = document.querySelectorAll('.hero-eyebrow, .hero-title, .hero-subtitle');
+heroTitles.forEach(el => {
+  let mouseX = 0, mouseY = 0;       // 鼠标相对标题中心的偏移
+  let tx = 0, ty = 0;               // 阻尼跟随的偏移
+  let blur = 0;                     // 当前 RGB 分离量
+  let hovering = false;
+  let rafId = null;
+
+  el.addEventListener('mouseenter', () => {
+    hovering = true;
+    const loop = () => {
+      if(!hovering) return;
+      // 阻尼跟随：鼠标偏移 * 系数，用 lerp 平滑
+      tx += (mouseX * 0.08 - tx) * 0.08;
+      ty += (mouseY * 0.08 - ty) * 0.08;
+      el.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px)`;
+      // 区域模糊：鼠标越近 RGB 分离越大
+      const dist = Math.sqrt(mouseX*mouseX + mouseY*mouseY);
+      const targetBlur = Math.max(0, 4 - dist / 50);
+      blur += (targetBlur - blur) * 0.1;
+      el.style.textShadow = `${blur.toFixed(2)}px 0 #ff0050, ${(-blur).toFixed(2)}px 0 #00ffe0, 0 0 ${blur*2}px rgba(255,0,80,${blur*0.1})`;
+      rafId = requestAnimationFrame(loop);
+    };
+    loop();
+  });
+
+  el.addEventListener('mousemove', (e) => {
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    mouseX = e.clientX - cx;
+    mouseY = e.clientY - cy;
+  });
+
+  el.addEventListener('mouseleave', () => {
+    hovering = false;
+    cancelAnimationFrame(rafId);
+    // 平滑恢复
+    let restoreTx = tx, restoreTy = ty, restoreBlur = blur;
+    const restoreLoop = () => {
+      restoreTx += (0 - restoreTx) * 0.15;
+      restoreTy += (0 - restoreTy) * 0.15;
+      restoreBlur += (0 - restoreBlur) * 0.15;
+      el.style.transform = `translate(${restoreTx.toFixed(2)}px, ${restoreTy.toFixed(2)}px)`;
+      el.style.textShadow = restoreBlur > 0.1 ? `${restoreBlur.toFixed(2)}px 0 #ff0050, ${(-restoreBlur).toFixed(2)}px 0 #00ffe0` : '';
+      if(Math.abs(restoreTx) > 0.1 || Math.abs(restoreTy) > 0.1 || restoreBlur > 0.1){
+        requestAnimationFrame(restoreLoop);
+      } else {
+        el.style.transform = '';
+        el.style.textShadow = '';
+      }
+    };
+    restoreLoop();
+  });
+});
+console.log(`✅ 标题阻尼跟随+区域模糊已绑定（${heroTitles.length}个标题）`);
+
+/* 苹果视频：192帧（assets/apple_frames/frame_0001.webp ~ frame_0192.webm），循环播放 */
+const appleCanvas = document.getElementById('introDataAppleCanvas');
+if(appleCanvas){
+  const ctx = appleCanvas.getContext('2d');
+  const TOTAL = 192;
+  const frames = [];
+  let loaded = 0;
+  let currentFrame = 0;
+  for(let i=0;i<TOTAL;i++){
+    const img = new Image();
+    img.src = 'assets/apple_frames/frame_' + String(i+1).padStart(4,'0') + '.webp';
+    frames[i] = img;
+    img.onload = ()=>{
+      loaded++;
+      if(loaded === 1) draw(0);
+      if(loaded === TOTAL) console.log('✅ 苹果视频WebP序列帧加载完成（192帧透明底）');
+    };
+  }
+  function draw(idx){
+    if(idx<0 || idx>=TOTAL || !frames[idx] || !frames[idx].complete) return;
+    ctx.clearRect(0,0,appleCanvas.width,appleCanvas.height);
+    ctx.drawImage(frames[idx], 0, 0, appleCanvas.width, appleCanvas.height);
+  }
+  // 循环播放：24fps
+  let appleTimer = setInterval(()=>{
+    const next = (currentFrame + 1) % TOTAL;
+    currentFrame = next;
+    draw(currentFrame);
+  }, 1000/24);
+}
+
+/* 旧 SVG filter（feColorMatrix）+ WebGL chroma key + Canvas getImageData 方案已删除，改用 WebP 序列帧源端抠像 */
+
+/* ---------- 17c. 经纬仪交互：canvas 序列帧 + 镜头跟随鼠标 ----------
+   视频分析结论（162 帧）：
+   · 帧 001-115：经纬仪绕垂直轴水平旋转一周（正面→侧面→背面→正面）
+   · 帧 116-162：镜头上下俯仰/追踪（正面平视→俯视/仰视→回到正面）
+   交互映射：
+   · 鼠标水平移动 → 控制水平旋转帧（帧 1-115）
+   · 鼠标垂直移动 → 控制镜头俯仰帧（帧 116-162）
+   · 中心死区内保持正面静止，降低灵敏度，带阻尼平滑
+   ---------- */
+const theodoliteCanvas = document.getElementById('theodoliteCanvas');
+if(theodoliteCanvas){
+  const ctx = theodoliteCanvas.getContext('2d');
+  const TOTAL_FRAMES = 162;
+  const FRAMES_H_START = 0;     // 帧 1 索引：水平旋转起点（正面）
+  const FRAMES_H_END = 114;     // 帧 115 索引：水平旋转终点（回到正面）
+  const FRAMES_T_START = 115;   // 帧 116 索引：俯仰起点（正面平视）
+  const FRAMES_T_END = 161;     // 帧 162 索引：俯仰终点
+
+  const frames = [];
+  let loadedFrames = 0;
+  let isVisible = false;
+  let rafId = null;
+
+  // 交互状态
+  const mouse = {x:0.5, y:0.5};           // 原始输入 0~1
+  const smooth = {x:0.5, y:0.5};          // 阻尼平滑值
+  let currentFrame = FRAMES_H_START;      // 当前显示帧（浮点）
+  let targetFrame = FRAMES_H_START;       // 目标帧
+  let currentRotateX = 0;                 // 当前 rotateX（辅助俯仰）
+  let targetRotateX = 0;                  // 目标 rotateX
+  let lastMoveTime = 0;                   // 上次鼠标移动时间
+
+  // 灵敏度参数：左右旋转为主，上下俯仰为辅
+  const DEADZONE = 0.10;                  // 中心死区（小一点，追踪更准）
+  const DAMPING = 0.14;                   // 鼠标位置阻尼（响应更快）
+  const FRAME_DAMPING = 0.16;             // 帧索引阻尼（平滑但不拖沓）
+  const ROTATE_DAMPING = 0.12;            // 俯仰阻尼
+  const MAX_ROTATE_X = 14;                // 辅助俯仰角度 ±14deg
+  const RETURN_DELAY = 1500;              // 停止移动后多久归位(ms)
+
+  // canvas 内部渲染尺寸：按帧原始比例 1240x1758
+  const NATURAL_W = 1240;
+  const NATURAL_H = 1758;
+  theodoliteCanvas.width = NATURAL_W;
+  theodoliteCanvas.height = NATURAL_H;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  // 加载序列帧（优先首帧立即显示）
+  for(let i=0; i<TOTAL_FRAMES; i++){
+    const img = new Image();
+    img.src = `assets/theodolite_frames/frame_${String(i+1).padStart(4,'0')}.webp`;
+    frames[i] = img;
+    img.onload = () => {
+      loadedFrames++;
+      if(loadedFrames === 1){
+        draw();
+      }
+      if(loadedFrames === TOTAL_FRAMES){
+        console.log('✅ 经纬仪序列帧加载完成（162帧）');
+      }
+    };
+    img.onerror = () => {
+      console.warn('⚠️ 经纬仪帧加载失败:', img.src);
+    };
+  }
+
+  function pickTargets(now){
+    // 鼠标位置直接映射到姿态：
+    // X -> 水平旋转帧 1-115（主要）
+    // Y -> 辅助俯仰：轻微偏移帧索引 + rotateX 3D 旋转
+
+    const dx = (smooth.x - 0.5) * 2;   // -1 ~ 1
+    const dy = (smooth.y - 0.5) * 2;   // -1 ~ 1
+
+    // 水平旋转（主）：以画面中心为正面基准，X 偏离决定左右旋转角度
+    // 帧 1 和帧 115 都是正面，X=0 与 X=1 都回到正面，X=0.5 为背面
+    let hFrame = FRAMES_H_START + smooth.x * (FRAMES_H_END - FRAMES_H_START);
+
+    // 俯仰（辅）：Y 在水平帧基础上做小幅偏移，模拟镜头上下转
+    // 只在 Y 明显偏离中心时生效，且偏移量小，不抢水平旋转主体
+    const ady = Math.max(0, Math.abs(dy) - DEADZONE) / (1 - DEADZONE);
+    const tiltOffset = (dy > 0 ? 1 : -1) * ady * 18;
+    targetFrame = hFrame + tiltOffset;
+
+    // 俯仰（辅）：CSS rotateX 增强镜头上下转动感
+    targetRotateX = (dy > 0 ? -1 : 1) * ady * MAX_ROTATE_X;
+
+    // 边界保护
+    targetFrame = Math.max(FRAMES_H_START, Math.min(FRAMES_T_END, targetFrame));
+
+    // 自动归位：长时间不移动回到正面
+    if(now && now - lastMoveTime > RETURN_DELAY){
+      targetFrame = FRAMES_H_START;
+      targetRotateX = 0;
+    }
+  }
+
+  function draw(now){
+    if(!isVisible || loadedFrames === 0){
+      rafId = requestAnimationFrame(draw);
+      return;
+    }
+
+    // 阻尼平滑鼠标位置
+    smooth.x += (mouse.x - smooth.x) * DAMPING;
+    smooth.y += (mouse.y - smooth.y) * DAMPING;
+
+    pickTargets(now);
+
+    // 帧索引阻尼
+    currentFrame += (targetFrame - currentFrame) * FRAME_DAMPING;
+    // 俯仰阻尼
+    currentRotateX += (targetRotateX - currentRotateX) * ROTATE_DAMPING;
+
+    const idx = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.round(currentFrame)));
+    const img = frames[idx];
+    if(img && img.complete && img.naturalWidth > 0){
+      ctx.clearRect(0, 0, NATURAL_W, NATURAL_H);
+      ctx.drawImage(img, 0, 0, NATURAL_W, NATURAL_H);
+    }
+
+    // 应用 3D 俯仰 + 上移（辅助上下旋转镜头，不改变帧内容主体）
+    theodoliteCanvas.style.transform = `translateY(-6vh) rotateX(${currentRotateX.toFixed(2)}deg)`;
+
+    rafId = requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  // 鼠标移动：映射到 0~1
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = Math.max(0, Math.min(1, e.clientX / window.innerWidth));
+    mouse.y = Math.max(0, Math.min(1, e.clientY / window.innerHeight));
+    lastMoveTime = performance.now();
+  }, {passive:true});
+
+  // 触摸设备支持
+  window.addEventListener('touchmove', (e) => {
+    if(e.touches.length === 0) return;
+    const t = e.touches[0];
+    mouse.x = Math.max(0, Math.min(1, t.clientX / window.innerWidth));
+    mouse.y = Math.max(0, Math.min(1, t.clientY / window.innerHeight));
+    lastMoveTime = performance.now();
+  }, {passive:true});
+
+  // 可见性：进入视口才渲染，离开暂停以节省性能
+  const theodoliteSection = document.getElementById('theodolite');
+  if(theodoliteSection){
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isVisible = entry.isIntersecting;
+      });
+    }, {threshold:0.05});
+    observer.observe(theodoliteSection);
+  }
+
+  // 页面不可见时暂停 RAF
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden){
+      if(rafId) cancelAnimationFrame(rafId);
+    } else if(theodoliteSection){
+      const rect = theodoliteSection.getBoundingClientRect();
+      isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+      draw();
+    }
+  });
+}
+
+/* ---------- 经纬仪引导提示：进入界面(约85%)才浮现，3秒后淡出，左右移动立即淡出 ---------- */
+const theodoliteHint = document.getElementById('theodoliteHint');
+if(theodoliteHint){
+  let hintShown = false, hintGone = false, hintTimer = null;
+  const showHint = () => {
+    if(hintShown || hintGone) return;
+    hintShown = true;
+    theodoliteHint.classList.remove('hidden');
+    theodoliteHint.classList.add('visible');
+    hintTimer = setTimeout(hideHint, 3000);   // 播放3秒后淡化消失
+  };
+  const hideHint = () => {
+    if(hintGone || !hintShown) return;
+    hintGone = true;
+    clearTimeout(hintTimer);
+    theodoliteHint.classList.remove('visible');
+    theodoliteHint.classList.add('hidden');
+  };
+  // 进入经纬仪界面触发（IntersectionObserver，40%可见=真正到达界面）
+  const theoSection = document.getElementById('theodolite');
+  if(theoSection){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){ showHint(); io.disconnect(); }
+      });
+    }, {threshold:0.4});
+    io.observe(theoSection);
+  }
+  // 有效左右移动（累计位移超阈值）→ 立即淡出
+  let accX = 0, lastX = null;
+  window.addEventListener('mousemove', (e)=>{
+    if(lastX !== null) accX += Math.abs(e.clientX - lastX);
+    lastX = e.clientX;
+    if(accX > 120) hideHint();
+  }, {passive:true});
+  window.addEventListener('touchstart', hideHint, {passive:true, once:true});
+}
+
+/* ---------- 经纬仪section滚动pin：停留供交互，再滚动后释放进入FAQ ---------- */
+(function(){
+  const section = document.getElementById('theodolite');
+  if(!section || typeof ScrollTrigger === 'undefined') return;
+
+  ScrollTrigger.create({
+    trigger: section,
+    start: 'top top',
+    end: '+=170%',
+    pin: true,
+    pinSpacing: true,
+    anticipatePin: 1
+  });
+})();
+
+/* ---------- 17e. GridMotion网格流动背景（fixed全页层） ----------
+   入场：进度74.5→78各行差速流入+整体淡入，衔接四向车转场（车canvas 9979在其上）；
+   灰度：进度78→88固有色线性流失，88全灰后锁定不再变化；
+   鼠标：横移带差速惯性（偶数行正向、奇数行反向） ---------- */
+(function(){
+  const bg = document.getElementById('theoGrid');
+  const rowsEl = document.getElementById('tgRows');
+  const liftTitle = document.getElementById('liftTitle');   // 白页大标题（显影由本ST全局进度驱动）
+  if(!bg || !rowsEl) return;
+  // 13张2幕素材（720px WebP），Fisher-Yates打乱顺序后150格循环复用
+  const imgs = Array.from({length:13},(_,i)=>'assets/theo_grid/theo_g'+String(i+1).padStart(2,'0')+'.webp');
+  for(let i=imgs.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [imgs[i],imgs[j]]=[imgs[j],imgs[i]];
+  }
+  const ROWS = 10, COLS = 15;
+  let n = 0;
+  for(let r=0; r<ROWS; r++){
+    const row = document.createElement('div');
+    row.className = 'tg-row';
+    const mover = document.createElement('div');   // 内层行：承接鼠标惯性横移
+    mover.className = 'tg-row-move';
+    for(let c=0; c<COLS; c++){
+      const it = document.createElement('div');
+      it.className = 'tg-item';
+      const card = document.createElement('div');
+      card.className = 'tg-card';
+      card.style.backgroundImage = 'url(' + imgs[n % imgs.length] + ')';
+      n++;
+      it.appendChild(card);
+      mover.appendChild(it);
+    }
+    row.appendChild(mover);
+    rowsEl.appendChild(row);
+  }
+  const rows = rowsEl.querySelectorAll('.tg-row');
+  const movers = rowsEl.querySelectorAll('.tg-row-move');
+  const ENTER_S = 74.5, ENTER_E = 78;    // 流入区间（全页进度%）
+  const GRAY_S  = 78,   GRAY_E  = 88;    // 灰度区间
+  // 滚动进度 → 显隐/流入偏移/灰度 + 白页标题显影
+  function setStage(pct){
+    // 白页标题"什么是提升机？"：32%起渐显（全局进度，不受提升机ST触发起点限制）；
+    // 幕布覆盖率达65%后随覆盖率线性淡出（覆盖率由提升机ST落盘 window.__liftCurtainT）
+    if(liftTitle){
+      const cT  = Math.min(1, Math.max(0, (pct - 32) / 2));
+      const cov = Math.min(1, Math.max(0, window.__liftCurtainT || 0));
+      const fade = cov <= 0.65 ? 1 : 1 - (cov - 0.65) / 0.35;
+      const op = cT * fade;
+      liftTitle.style.display = op > 0.01 ? 'flex' : 'none';
+      liftTitle.style.opacity = op.toFixed(3);
+    }
+    const vis = pct >= ENTER_S - 1.5 && pct <= 96.5;
+    bg.style.display = vis ? 'block' : 'none';
+    if(!vis) return;
+    // 入场：easeOutCubic，各行反向差速流入（偶行右、奇行左）
+    const t = Math.min(1, Math.max(0, (pct - ENTER_S) / (ENTER_E - ENTER_S)));
+    const ease = 1 - Math.pow(1 - t, 3);
+    // 透明节奏：77%前压至≈0.07几乎不可见（隐约流动），77→78%再升至全显
+    const FAINT = 0.07, FAINT_T = (77 - ENTER_S) / (ENTER_E - ENTER_S);
+    const op = pct <= 77
+      ? (t / FAINT_T) * FAINT
+      : FAINT + (t - FAINT_T) / (1 - FAINT_T) * (1 - FAINT);
+    bg.style.opacity = op.toFixed(3);
+    rows.forEach((row, idx)=>{
+      const dir = idx % 2 === 0 ? 1 : -1;
+      const amp = 55 + (idx % 4) * 12;         // 各行流速不同，产生穿行感
+      row.style.transform = 'translateX(' + (dir * (1 - ease) * amp).toFixed(2) + 'vw)';
+    });
+    // 灰度：78→88线性流失固有色，88后锁定全灰
+    const g = Math.min(1, Math.max(0, (pct - GRAY_S) / (GRAY_E - GRAY_S)));
+    bg.style.filter = 'grayscale(' + g.toFixed(3) + ')';
+  }
+  if(typeof ScrollTrigger !== 'undefined'){
+    ScrollTrigger.create({ start: 0, end: 'max', onUpdate: s => setStage(s.progress * 100) });
+  }
+  setStage(0);
+  // 鼠标横移 → 各行差速惯性跟随
+  const inertia = [0.6, 0.4, 0.3, 0.2];
+  window.addEventListener('mousemove', (e)=>{
+    if(bg.style.display !== 'block') return;
+    const moveAmount = (e.clientX / innerWidth) * 300 - 150;
+    movers.forEach((mover, idx)=>{
+      const dir = idx % 2 === 0 ? 1 : -1;
+      gsap.to(mover, {
+        x: moveAmount * dir,
+        duration: 0.8 + inertia[idx % inertia.length],
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+    });
+  }, {passive:true});
+  // 白页标题鼠标阻尼拖拽：quickTo缓动追随鼠标（x/y位移+微倾），power3.out产生拖拽阻尼感
+  if(liftTitle && typeof gsap !== 'undefined'){
+    const tqx = gsap.quickTo(liftTitle, 'x', {duration:0.9, ease:'power3.out'});
+    const tqy = gsap.quickTo(liftTitle, 'y', {duration:0.9, ease:'power3.out'});
+    const tqr = gsap.quickTo(liftTitle, 'rotation', {duration:1.1, ease:'power3.out'});
+    window.addEventListener('mousemove', (e)=>{
+      if(liftTitle.style.display !== 'flex') return;
+      const nx = e.clientX / innerWidth - 0.5;    // -0.5 ~ 0.5
+      const ny = e.clientY / innerHeight - 0.5;
+      tqx(nx * 60);                               // 最大±30px位移
+      tqy(ny * 36);                               // 最大±18px
+      tqr(nx * 2.4);                              // 最大±1.2°微倾
+    }, {passive:true});
+  }
+})();
+
+/* ---------- 17d. 鼠标轨迹局部glitch（RGB分离+形体撕裂抖动） ---------- */
+const heroCanvasWrap = document.getElementById('heroCanvasWrap');
+const heroGlitchField = document.getElementById('heroGlitchField');
+let glitchTimer = null;
+let lastGlitchTime = 0;
+
+if(heroCanvasWrap && heroGlitchField){
+  // 鼠标在苹果框内移动：glitch field跟随 + 触发短暂glitch
+  heroCanvasWrap.addEventListener('mousemove', (e)=>{
+    const rect = heroCanvasWrap.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    // glitch field跟随鼠标
+    heroGlitchField.style.left = x + 'px';
+    heroGlitchField.style.top = y + 'px';
+    heroGlitchField.classList.add('active');
+
+    // 节流：每80ms触发一次glitch抖动
+    const now = Date.now();
+    if(now - lastGlitchTime > 80){
+      lastGlitchTime = now;
+      heroCanvasWrap.classList.add('glitch');
+      if(glitchTimer) clearTimeout(glitchTimer);
+      glitchTimer = setTimeout(()=>{
+        heroCanvasWrap.classList.remove('glitch');
+      }, 150);
+    }
+  }, {passive:true});
+
+  // 鼠标离开苹果框：glitch field淡出
+  heroCanvasWrap.addEventListener('mouseleave', ()=>{
+    heroGlitchField.classList.remove('active');
+    heroCanvasWrap.classList.remove('glitch');
+  });
+
+  // 移动端触摸支持
+  heroCanvasWrap.addEventListener('touchmove', (e)=>{
+    if(e.touches.length > 0){
+      const rect = heroCanvasWrap.getBoundingClientRect();
+      const x = e.touches[0].clientX - rect.left;
+      const y = e.touches[0].clientY - rect.top;
+      heroGlitchField.style.left = x + 'px';
+      heroGlitchField.style.top = y + 'px';
+      heroGlitchField.classList.add('active');
+      const now = Date.now();
+      if(now - lastGlitchTime > 80){
+        lastGlitchTime = now;
+        heroCanvasWrap.classList.add('glitch');
+        if(glitchTimer) clearTimeout(glitchTimer);
+        glitchTimer = setTimeout(()=>{
+          heroCanvasWrap.classList.remove('glitch');
+        }, 150);
+      }
+    }
+  }, {passive:true});
+
+  heroCanvasWrap.addEventListener('touchend', ()=>{
+    heroGlitchField.classList.remove('active');
+    heroCanvasWrap.classList.remove('glitch');
+  });
+
+  console.log('✅ 鼠标轨迹glitch已启动（RGB分离+形体撕裂抖动）');
+}
+
+/* ---------- 18. 大树UI：光标跟随聚光灯揭示第二层（0813底图上浮现流体图） ---------- */
+const SPOTLIGHT_R = 224; // 原280，缩小20%
+const heroRevealLayer = document.getElementById('heroRevealLayer');
+const heroSpotlightCanvas = document.getElementById('heroSpotlightCanvas');
+const heroMouse = {x:-999, y:-999};
+const heroSmooth = {x:-999, y:-999};
+let heroRaf = null;
+let lastMaskX = -999, lastMaskY = -999;
+
+if(heroRevealLayer && heroSpotlightCanvas){
+  const ctx = heroSpotlightCanvas.getContext('2d');
+  // 迷雾颜色：纯白（完全不透明）
+  const FOG_R = 255, FOG_G = 255, FOG_B = 255;
+  const SPOTLIGHT_R_FAINT = 150;  // 驱散半径
+
+  // 不再用 getImageData 检测 alpha（file:// 协议会 taint canvas）
+  // 改用 CSS mask 把迷雾 canvas 限制在 sy4.png 非透明区
+
+  function resizeSpotlightCanvas(){
+    heroSpotlightCanvas.width = window.innerWidth;
+    heroSpotlightCanvas.height = window.innerHeight;
+    // 初始填充白色迷雾（完全不透明）
+    ctx.fillStyle = `rgb(${FOG_R}, ${FOG_G}, ${FOG_B})`;
+    ctx.fillRect(0, 0, heroSpotlightCanvas.width, heroSpotlightCanvas.height);
+  }
+  resizeSpotlightCanvas();
+  window.addEventListener('resize', resizeSpotlightCanvas);
+
+  window.addEventListener('mousemove', (e)=>{
+    heroMouse.x = e.clientX;
+    heroMouse.y = e.clientY;
+  }, {passive:true});
+
+  window.addEventListener('touchmove', (e)=>{
+    if(e.touches.length > 0){
+      heroMouse.x = e.touches[0].clientX;
+      heroMouse.y = e.touches[0].clientY;
+    }
+  }, {passive:true});
+
+  function animateSpotlight(){
+    heroSmooth.x += (heroMouse.x - heroSmooth.x) * 0.15;
+    heroSmooth.y += (heroMouse.y - heroSmooth.y) * 0.15;
+
+    // 第1步：迷雾慢恢复（每帧填充一点白色，约1.5秒恢复驱散区）
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 0.05;  // 恢复速度加快（更不透明）
+    ctx.fillStyle = `rgb(${FOG_R}, ${FOG_G}, ${FOG_B})`;
+    ctx.fillRect(0, 0, heroSpotlightCanvas.width, heroSpotlightCanvas.height);
+    ctx.globalAlpha = 1.0;
+
+    // 第2步：鼠标位置用 destination-out 擦除（驱散迷雾，增强雾化渐变）
+    if(heroSmooth.x > -100){
+      ctx.globalCompositeOperation = 'destination-out';
+      const grad = ctx.createRadialGradient(heroSmooth.x, heroSmooth.y, 0, heroSmooth.x, heroSmooth.y, SPOTLIGHT_R_FAINT);
+      // 雾化渐变：更多中间过渡，更有迷雾感
+      grad.addColorStop(0, 'rgba(0,0,0,0.95)');     // 中心几乎完全驱散
+      grad.addColorStop(0.25, 'rgba(0,0,0,0.82)');   // 强驱散
+      grad.addColorStop(0.45, 'rgba(0,0,0,0.55)');  // 中等驱散
+      grad.addColorStop(0.65, 'rgba(0,0,0,0.3)');   // 弱驱散
+      grad.addColorStop(0.8, 'rgba(0,0,0,0.12)');    // 边缘过渡
+      grad.addColorStop(0.92, 'rgba(0,0,0,0.04)');   // 极弱过渡
+      grad.addColorStop(1, 'rgba(0,0,0,0)');         // 外围不驱散
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(heroSmooth.x, heroSmooth.y, SPOTLIGHT_R_FAINT, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+    }
+
+    heroRaf = requestAnimationFrame(animateSpotlight);
+  }
+  animateSpotlight();
+  console.log('✅ 白色迷雾驱散已启动（纯白不透明+慢恢复2秒+雾化渐变+半径220）');
+}
+
+console.log('✅ 网站已加载。旋转苹果+大树UI聚光灯+0813底图已接入。');
+
+/* === Strands WebGL发光光带入场动画（移植Vue Bits Strands shader） === */
+(function(){
+  const overlay = document.getElementById('introOverlay');
+  const canvas = document.getElementById('strandsCanvas');
+  const logo = document.getElementById('introLogo');
+  if(!overlay || !canvas) return;
+  const gl = canvas.getContext('webgl2');
+  if(!gl){ overlay.remove(); return; }
+
+  // 着色器（GLSL ES 3.0，支持变量索引数组）
+  const VERT = `#version 300 es
+in vec2 position;
+void main(){gl_Position=vec4(position,0.,1.);}`;
+  const FRAG = `#version 300 es
+precision highp float;
+uniform float uTime;uniform vec2 uResolution;uniform vec3 uColors[8];uniform int uColorCount;uniform int uStrandCount;
+uniform float uSpeed,uAmplitude,uWaviness,uThickness,uGlow,uTaper,uSpread,uIntensity,uOpacity,uScale,uSaturation;
+out vec4 fragColor;
+const float PI=3.14159265;
+vec3 spectrum(float t){return 0.5+0.5*cos(2.0*PI*(t+vec3(0.0,0.33,0.67)));}
+vec3 samplePalette(float t){t=fract(t);float s=t*float(uColorCount);int i=int(floor(s));float b=fract(s);int n=i+1;if(n>=uColorCount)n=0;return mix(uColors[i],uColors[n],b);}
+vec3 strandColor(float t){if(uColorCount>0)return samplePalette(t);return spectrum(t);}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-0.5*uResolution)/uResolution.y;
+  uv.y += 0.45;             // 光带下移：uv.y>0是上半屏，光带在y=0，uv.y+=使片元uv.y变大，下方片元uv.y=0→光带显示在下方（0.25→0.45进一步下移）
+  uv/=max(uScale,0.0001);
+  float e=0.06+uIntensity*0.94;
+  // 包络频率从1.3→1.0，拉宽30%；taper从3.2→2.5边缘衰减更慢进一步拉长
+  float env=pow(max(cos(uv.x*PI*1.0),0.0),uTaper);
+  vec3 col=vec3(0.0);
+  for(int i=0;i<12;i++){
+    if(i>=uStrandCount)break;
+    float fi=float(i);float ph=fi*1.7*uSpread;float freq=(2.0+fi*0.35)*uWaviness;float spd=1.4+fi*1.2;
+    float tt=uTime*uSpeed;
+    float w=sin(uv.x*freq+tt*spd+ph)*0.60+sin(uv.x*freq*1.1-tt*spd*0.7+ph*1.7)*0.40;
+    float amp=(0.1+0.02*e)*env*uAmplitude;float y=w*amp;
+    float d=abs(uv.y-y);float thick=(0.001+0.05*e)*(0.35+env)*uThickness;
+    float g=thick/(d+thick*0.45);g=g*g;
+    float h=fi/float(uStrandCount)+uv.x*0.30+uTime*0.04;
+    col+=strandColor(h)*g*env;
+  }
+  col*=0.45+0.7*e;
+  col=1.0-exp(-col*uGlow);
+  float gray=dot(col,vec3(0.2126,0.7152,0.0722));
+  col=max(mix(vec3(gray),col,uSaturation),0.0);
+  float lum=max(max(col.r,col.g),col.b);
+  float alpha=clamp(lum,0.0,1.0)*uOpacity;
+  fragColor=vec4(col*uOpacity,alpha);
+}`;
+
+  function compile(type, src){
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+  gl.linkProgram(prog); gl.useProgram(prog);
+
+  // 全屏三角形
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  const posLoc = gl.getAttribLocation(prog, 'position');
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+  // uniforms
+  const U = name => gl.getUniformLocation(prog, name);
+  const u = {
+    time:U('uTime'), res:U('uResolution'), colors:U('uColors'),
+    colorCount:U('uColorCount'), strandCount:U('uStrandCount'),
+    speed:U('uSpeed'), amp:U('uAmplitude'), wav:U('uWaviness'), thick:U('uThickness'),
+    glow:U('uGlow'), taper:U('uTaper'), spread:U('uSpread'), inten:U('uIntensity'),
+    op:U('uOpacity'), scale:U('uScale'), sat:U('uSaturation')
+  };
+
+  // 参数（参考poo.txt默认值，配色改为科技冷色）
+  const colors = [
+    [0.42,0.78,1.0],  // 蓝
+    [0.49,0.85,0.93], // 青
+    [0.36,0.59,1.0],  // 深蓝
+    [0.71,0.92,1.0],  // 浅蓝
+    [0.93,0.42,0.42], // 红点缀
+    [1.0,0.85,0.43],  // 黄点缀
+    [0.49,0.85,0.93], [0.42,0.78,1.0]
+  ];
+  const flatColors = colors.flat();
+
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    gl.viewport(0,0,canvas.width,canvas.height);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  const start = performance.now();
+  let raf, fadeOut = false;
+  function render(){
+    const t = (performance.now() - start) * 0.001;
+    gl.clearColor(0,0,0,1); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1f(u.time, t);
+    gl.uniform2f(u.res, canvas.width, canvas.height);
+    gl.uniform3fv(u.colors, flatColors);
+    gl.uniform1i(u.colorCount, 6);
+    gl.uniform1i(u.strandCount, 6);   // 4→6条光带，配合拉长效果更密集
+    gl.uniform1f(u.speed, 0.6);
+    gl.uniform1f(u.amp, 1.3);          // 1.1→1.3 振幅加大配合拉长
+    gl.uniform1f(u.wav, 1.3);
+    gl.uniform1f(u.thick, 0.8);
+    gl.uniform1f(u.glow, 2.8);
+    gl.uniform1f(u.taper, 2.5);        // 3.2→2.5 边缘衰减更慢，整体拉长约30%
+    gl.uniform1f(u.spread, 1.1);
+    gl.uniform1f(u.inten, 0.7);
+    gl.uniform1f(u.op, 1);
+    gl.uniform1f(u.scale, 1.6);
+    gl.uniform1f(u.sat, 1.3);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    raf = requestAnimationFrame(render);
+  }
+  render();
+
+  // 5秒入场时间线：1.0s logo出现 → 4.2s开始淡出 → 5.1s移除
+  // 延长到5秒确保hero section完全就绪后再移除遮罩
+  setTimeout(()=> logo && logo.classList.add('show'), 1000);
+  // 退场控制：进度跑到100%才退场进入主页（最少展示4.2s保证logo节奏，25s兜底防个别资源挂起卡死）
+  let minTimeDone=false, allQueued=false, loadSettled=false, introExited=false;
+  const introTryExit=()=>{               // 双条件退场：进度100% 且 最少展示时间已过
+    if(introExited||!loadSettled||!minTimeDone)return;
+    introExited=true;
+    overlay.classList.add('done');
+    setTimeout(()=>{ cancelAnimationFrame(raf); overlay.remove(); }, 900);
+  };
+  setTimeout(()=>{ minTimeDone=true; introTryExit(); }, 4200);
+  setTimeout(()=>{ loadSettled=true; introTryExit(); }, 25000);
+
+  // === 入场动画期间预加载序列帧（利用5秒等待时间） ===
+  // Service: truck_webp/frame_001-120.webp（120帧，关键帧采样预加载）
+  // Lift: lift_webp/frame_001-091.webp（91帧，关键帧采样预加载）
+  // Ending: ending_webp/frame_001-209.webp（209帧，四向车收尾动画，关键帧采样预加载）
+  // 策略：只预加载关键帧（每5帧取1帧），减少首屏请求；其余帧在用户滚动到对应section前由原有逻辑加载
+  // === 右下角加载进度：关键帧+字体+首屏视频，入场页实时百分比 ===
+  const loadNum=document.getElementById('introLoadNum'),loadBar=document.getElementById('introLoadBar');
+  let loadDone=0,loadTotal=0;
+  const tickLoad=()=>{
+    if(!loadTotal||!loadNum)return;
+    let p=Math.round(loadDone/loadTotal*100);
+    if(!allQueued)p=Math.min(p,99);   // 资源队列没排完前不许到100%
+    p=Math.min(100,p);
+    loadNum.textContent=p+'%'; loadBar.style.width=p+'%';
+    if(allQueued&&loadDone>=loadTotal){ loadSettled=true; introTryExit(); }
+  };
+  const addLoad=n=>{ loadTotal+=n; tickLoad(); };
+  const doneLoad=()=>{ loadDone++; tickLoad(); };
+  addLoad(2);  // 字体 + 首屏星空视频
+  if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(doneLoad).catch(doneLoad); } else { doneLoad(); }
+  const starVid=document.getElementById('heroStarVideo');
+  if(starVid){ if(starVid.readyState>=3){ doneLoad(); } else { starVid.addEventListener('canplay',doneLoad,{once:true}); } } else { doneLoad(); }
+  setTimeout(()=>{
+    const preloadFrame = (src) => {
+      const img = new Image();
+      addLoad(1);
+      img.onload = img.onerror = doneLoad;   // 失败也计数，进度条不卡死
+      img.src = src;
+    };
+    // Service关键帧：1,6,11,...,116（共24帧）
+    for(let i=1; i<=120; i+=5){ preloadFrame(`assets/truck_webp/frame_${String(i).padStart(3,'0')}.webp`); }
+    // Lift关键帧：1,6,11,...,91（共19帧）
+    for(let i=1; i<=91; i+=5){ preloadFrame(`assets/lift_webp/frame_${String(i).padStart(3,'0')}.webp`); }
+    // Ending关键帧：1,6,11,...,206（共42帧）
+    for(let i=1; i<=209; i+=5){ preloadFrame(`assets/ending_webp/frame_${String(i).padStart(3,'0')}.webp`); }
+    // Theodolite关键帧：1,11,21,...,161（共17帧）
+    for(let i=1; i<=162; i+=10){ preloadFrame(`assets/theodolite_frames/frame_${String(i).padStart(4,'0')}.webp`); }
+    allQueued=true; tickLoad();   // 帧队列排完，进度才允许冲到100%
+    console.log('✅ 序列帧关键帧预加载已启动（Service 24帧 + Lift 19帧 + Ending 42帧 + Theodolite 17帧）');
+  }, 1200);   // 入场1.2s后启动（logo出现后），不阻塞光带渲染
+})();
+
+/* === 几何科技风cursor跟随鼠标 === */
+(function(){
+  const cur = document.getElementById('techCursor');
+  if(!cur) return;
+  if(window.matchMedia('(hover:none) and (pointer:coarse)').matches) return;
+  let mx = innerWidth/2, my = innerHeight/2, lx = mx, ly = my;
+  addEventListener('mousemove', e=>{
+    mx = e.clientX; my = e.clientY;
+    const t = e.target;
+    const isInter = t && t.closest('a,button,input,textarea,select,[role="button"],.guide-btn,[data-editable]');
+    cur.classList.toggle('over-interactive', !!isInter);
+  }, {passive:true});
+  (function loop(){
+    lx += (mx-lx)*0.25; ly += (my-ly)*0.25;
+    cur.style.transform = `translate(${lx}px,${ly}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  })();
+  document.addEventListener('mouseleave', ()=> cur.style.opacity='0');
+  document.addEventListener('mouseenter', ()=> cur.style.opacity='1');
+})();
+
+/* === Hero苹果数据划痕粒子溅射 === */
+(function(){
+  const wrap = document.getElementById('heroCanvasWrap');
+  const canvas = document.getElementById('heroSparksCanvas');
+  if(!wrap || !canvas) return;
+  const ctx = canvas.getContext('2d');
+  function resize(){
+    const r = wrap.getBoundingClientRect();
+    canvas.width = r.width; canvas.height = r.height;
+  }
+  resize(); addEventListener('resize', resize);
+  new ResizeObserver(resize).observe(wrap);
+
+  const sparks = [];
+  const COLORS = ['#7CD3FF','#B4E5FF','#5B9BD5','#fff','#8FBCFF'];
+  let lastSpawn = 0;
+
+  wrap.addEventListener('mousemove', (e)=>{
+    const r = wrap.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const now = performance.now();
+    if(now - lastSpawn < 30) return;
+    lastSpawn = now;
+    const n = 3 + Math.floor(Math.random()*3);
+    for(let i=0;i<n;i++){
+      const ang = Math.random()*Math.PI*2;
+      const sp = 1.5 + Math.random()*3.5;
+      sparks.push({
+        x:x, y:y,
+        vx:Math.cos(ang)*sp,
+        vy:Math.sin(ang)*sp - 0.8,
+        life:1,
+        decay:0.012+Math.random()*0.015,
+        len:6+Math.random()*10,
+        color:COLORS[Math.floor(Math.random()*COLORS.length)],
+        angle:ang
+      });
+    }
+  }, {passive:true});
+
+  wrap.addEventListener('click', (e)=>{
+    const r = wrap.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    for(let i=0;i<24;i++){
+      const ang = (i/24)*Math.PI*2 + Math.random()*0.3;
+      const sp = 2 + Math.random()*4;
+      sparks.push({
+        x:x, y:y,
+        vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp - 1,
+        life:1, decay:0.01+Math.random()*0.01,
+        len:8+Math.random()*14,
+        color:COLORS[Math.floor(Math.random()*COLORS.length)],
+        angle:ang
+      });
+    }
+  });
+
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=sparks.length-1;i>=0;i--){
+      const s = sparks[i];
+      s.x += s.vx; s.y += s.vy;
+      s.vy += 0.08;
+      s.vx *= 0.98; s.vy *= 0.98;
+      s.life -= s.decay;
+      if(s.life <= 0){ sparks.splice(i,1); continue; }
+      const tailX = s.x - s.vx * s.len/3;
+      const tailY = s.y - s.vy * s.len/3;
+      ctx.globalAlpha = s.life;
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = 1.2 * s.life;
+      ctx.lineCap = 'round';
+      ctx.shadowBlur = 8; ctx.shadowColor = s.color;
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(s.x, s.y);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* === 提升机section：黑色幕布转场 + 91帧序列帧滚动驱动（效仿四向立库） === */
+(function(){
+  const sec = document.getElementById('intro-lift');
+  const curtain = document.getElementById('liftCurtain');
+  const canvas = document.getElementById('liftCanvas');
+  const liftTitle = document.getElementById('liftTitle');   // 白页大标题（幕布遮盖后隐藏）
+  if(!sec || !curtain || !canvas) return;
+  if(typeof ScrollTrigger === 'undefined') return;
+
+  const ctx = canvas.getContext('2d');
+  const TOTAL = 91;                 // 提升机转场.mov 总帧数
+  const frames = [];
+  let loaded = 0;
+  let currentFrame = -1;
+  let lastValidFrame = -1;          // 最近一次成功绘制的帧索引（用于fallback）
+
+  // 预加载91帧WebP序列（assets/lift_webp/frame_001.webp ~ frame_091.webp）
+  // WebP格式：91帧共3.89MB（vs PNG 144MB），加载快97%
+  for(let i=0;i<TOTAL;i++){
+    const img = new Image();
+    img.src = 'assets/lift_webp/frame_' + String(i+1).padStart(3,'0') + '.webp';
+    frames[i] = img;
+    img.onload = ()=>{
+      loaded++;
+      if(loaded === 1){
+        // 首帧加载完立即绘制（首帧=幕布色RGB(25,25,25)，与幕布无缝衔接）
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        drawFrame(0);
+      }
+    };
+  }
+
+  // 按cover适配绘制（1920x1080源帧 → 视口尺寸）
+  function drawFrame(idx){
+    if(idx<0 || idx>=TOTAL) idx = 0;
+    const img = frames[idx];
+    // 当前帧未加载完时，fallback到最近一次成功的帧（避免画面跳变）
+    if(!img || !img.complete){
+      console.log(`[lift] drawFrame(${idx}) fallback: img incomplete, lastValid=${lastValidFrame}`);
+      if(lastValidFrame >= 0 && lastValidFrame !== idx){
+        drawFrame(lastValidFrame);
+      }
+      return;
+    }
+    if(canvas.width !== window.innerWidth || canvas.height !== window.innerHeight){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // 纯白底：填白底，直接绘制序列帧（深色背景+亮色机械结构）
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    const iw = img.naturalWidth || 1920;
+    const ih = img.naturalHeight || 1080;
+    const cw = canvas.width, ch = canvas.height;
+    const scale = Math.max(cw/iw, ch/ih);     // cover 适配，铺满视口（无白边）
+    const dw = iw*scale, dh = ih*scale;
+    const dx = (cw-dw)/2, dy = (ch-dh)/2;
+    ctx.imageSmoothingEnabled = false;          // 禁用平滑，避免透明边缘羽化
+    console.log(`[lift] drawImage frame=${idx} iw=${iw} ih=${ih} cw=${cw} ch=${ch} scale=${scale.toFixed(3)} dx=${dx.toFixed(1)} dy=${dy.toFixed(1)} dw=${dw.toFixed(1)} dh=${dh.toFixed(1)}`);
+    ctx.drawImage(img, dx, dy, dw, dh);
+    lastValidFrame = idx;
+    canvas.setAttribute('data-frame', idx);   // 测试用：当前实际绘制帧
+  }
+
+  window.addEventListener('resize', ()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if(currentFrame >= 0) drawFrame(currentFrame);
+    if(curTv >= 0){ placeTv(); if(tvShown >= 0 && !tvAnim) tvDrawFull(tvShown); }   // 小电视跟随视口重定位+重绘
+  });
+
+  // === 进度45/48/51/53%节点：黑色货物方框内小电视四图 + 右侧堆积卡片文字UI ===
+  // 注：提升机区域在全页进度54.14%结束（实测），第4节点由54%前移至53%保证稳定触发
+  const NOTES = [
+    {at:0.45, zh:'采集一线资料',       en:'Field Data Collection'},
+    {at:0.48, zh:'建模现场设备和场景', en:'On-site Equipment & Scene Modeling'},
+    {at:0.51, zh:'复刻安装过程、工艺', en:'Recreating Installation & Process'},
+    {at:0.53, zh:'海外部门多元化输出', en:'Diversified Overseas Output'}
+  ];
+  const tv = document.getElementById('liftTv');
+  const tvCanvas = document.getElementById('liftTvCanvas');
+  const tvCtx = tvCanvas ? tvCanvas.getContext('2d') : null;
+  const tvRing = tv ? tv.querySelector('.lift-tv-ring') : null;
+  const stackCards = Array.prototype.slice.call(document.querySelectorAll('#liftStack .lift-card'));
+  let curTv = -1;
+  let tvOffTimer = null;
+  let curStack = -2;
+  // 黑色货物方框在1920x1080帧内坐标（frame_030/045实测，全程固定——摄像机跟拍货物）
+  const BOX = {x:781, y:338, w:345, h:391};
+  // 帧→视口坐标：与drawFrame相同的cover映射；小电视完全贴合黑色方框（无内缩）
+  function tvRect(){
+    const iw = 1920, ih = 1080;
+    const cw = innerWidth, ch = innerHeight;
+    const scale = Math.max(cw/iw, ch/ih);
+    const dx = (cw - iw*scale)/2, dy = (ch - ih*scale)/2;
+    return {
+      left: dx + BOX.x*scale,
+      top:  dy + BOX.y*scale,
+      w: BOX.w*scale,
+      h: BOX.h*scale
+    };
+  }
+  function placeTv(){
+    if(!tv) return;
+    const r = tvRect();
+    tv.style.left = r.left+'px';
+    tv.style.top = r.top+'px';
+    tv.style.width = r.w+'px';
+    tv.style.height = r.h+'px';
+  }
+  // === 小电视粒子切换系统：图片由下至上飘散/聚合 ===
+  // 兼容file://双击打开：不用getImageData（本地图会污染canvas），
+  // 改用离屏帧缓存+drawImage源切片，粒子=图片真实切片
+  const TV_W = 460, TV_H = 522;          // 画布逻辑分辨率（比例≈方框0.883）
+  const COLS = 36, ROWS = 41;            // 粒子网格密度
+  const TV_DUR = 780, TV_STAG = 0.32, TV_FALL = 0.46;   // 总时长/底部先行错峰/单粒子时长占比
+  const tvImgs = NOTES.map((n, i)=>{
+    const im = new Image();
+    im.src = 'assets/tv_img/img_' + (i+1) + '.webp';
+    return im;
+  });
+  const tvFrames = new Array(4).fill(null);   // 每图coverfit到画布尺寸的离屏缓存
+  let tvShown = -1;      // 当前停留图片
+  let tvAnim = null;     // 进行中的切换 {from,to,t0}
+  tvImgs.forEach((im, i)=>{
+    im.onload = ()=>{
+      tvFrames[i] = null;                       // 清缓存待重采样
+      if(tvShown === i && !tvAnim) tvDrawFull(i);
+    };
+  });
+  // 获取图片的画布尺寸离屏帧（coverfit，切片源全部在界内）
+  function tvFrame(idx){
+    if(tvFrames[idx]) return tvFrames[idx];
+    const im = tvImgs[idx];
+    if(!im.complete || !im.naturalWidth) return null;
+    const off = document.createElement('canvas');
+    off.width = TV_W; off.height = TV_H;
+    const c = off.getContext('2d');
+    const s = Math.max(TV_W/im.naturalWidth, TV_H/im.naturalHeight);
+    const w = im.naturalWidth*s, h = im.naturalHeight*s;
+    c.drawImage(im, (TV_W-w)/2, (TV_H-h)/2, w, h);
+    tvFrames[idx] = off;
+    return off;
+  }
+  // 直接绘制完整帧（切换结束后/重绘用）
+  function tvDrawFull(idx){
+    if(!tvCtx) return;
+    const f = tvFrame(idx);
+    tvCtx.clearRect(0, 0, TV_W, TV_H);
+    if(f) tvCtx.drawImage(f, 0, 0);
+  }
+  // 启动切换：旧图粒子自下而上上升飘散，新图粒子自下而上聚合入场
+  function tvStartSwitch(toIdx){
+    if(!tvCtx) return;
+    const from = tvShown;
+    tvShown = toIdx;
+    if(!tvFrame(toIdx)){ tvDrawFull(toIdx); return; }   // 图未加载完：直接绘制兜底
+    tvAnim = { from: from, to: toIdx, t0: performance.now() };
+    requestAnimationFrame(tvTick);
+  }
+  function tvTick(now){
+    if(!tvAnim) return;
+    const t = Math.min(1, (now - tvAnim.t0) / TV_DUR);
+    const toF = tvFrame(tvAnim.to);
+    const fromF = tvAnim.from >= 0 ? tvFrame(tvAnim.from) : null;
+    tvCtx.clearRect(0, 0, TV_W, TV_H);
+    if(toF){
+      const cw = TV_W/COLS, ch = TV_H/ROWS;
+      for(let r = 0; r < ROWS; r++){
+        // 由下至上：底部行（r大）先启动，逐行向上错峰
+        const delay = (1 - (r+1)/ROWS) * TV_STAG;
+        const u = Math.min(1, Math.max(0, (t - delay) / TV_FALL));
+        for(let c = 0; c < COLS; c++){
+          const sx = c*cw, sy = r*ch;
+          // 新图粒子：上升聚合入场
+          if(u > 0){
+            tvCtx.globalAlpha = u;
+            const oy = (1-u)*(1-u) * 46;
+            tvCtx.drawImage(toF, sx, sy, cw, ch, sx - 0.25, sy + oy - 0.25, cw + 0.5, ch + 0.5);
+          }
+          // 旧图粒子：向上飘散退场
+          if(fromF && u < 1){
+            tvCtx.globalAlpha = 1 - u;
+            const oy = -(u*u) * 60;
+            tvCtx.drawImage(fromF, sx, sy, cw, ch, sx - 0.25, sy + oy - 0.25, cw + 0.5, ch + 0.5);
+          }
+        }
+      }
+      tvCtx.globalAlpha = 1;
+    }
+    if(t < 1){ requestAnimationFrame(tvTick); }
+    else { tvAnim = null; tvDrawFull(tvShown); }   // 完成后绘制清晰整帧
+  }
+  // 小电视：进节点带=开机动画+粒子聚合+能量环跑圈，离开=CRT关机收缩熄灭
+  function setTv(idx){
+    if(idx === curTv) return;
+    const prev = curTv;
+    curTv = idx;
+    if(!tv) return;
+    if(idx < 0){
+      // 关机效果（仅当此前开着）
+      if(prev >= 0){
+        tvAnim = null;                     // 停止进行中的切换动画
+        tv.classList.remove('on');
+        tv.classList.add('off');
+        if(tvOffTimer) clearTimeout(tvOffTimer);
+        tvOffTimer = setTimeout(()=>{
+          if(curTv < 0 && tv){ tv.classList.remove('off'); }
+        }, 340);
+      }
+      return;
+    }
+    placeTv();
+    if(tvOffTimer){ clearTimeout(tvOffTimer); tvOffTimer = null; }
+    if(prev < 0){
+      // 开机：强制重启动画
+      tv.classList.remove('off');
+      void tv.offsetWidth;
+      tv.classList.add('on');
+    }
+    // 图片以由下至上粒子方式呈现（开机首次同样聚合入场）
+    if(idx !== tvShown || prev < 0) tvStartSwitch(idx);
+    // 能量环每次换图/开机都重新跑圈
+    if(tvRing){
+      tvRing.style.animation = 'none';
+      void tvRing.offsetWidth;
+      tvRing.style.animation = '';
+    }
+  }
+  // 右侧堆积卡片：滚过节点即入栈覆盖前卡（不清除、堆积遮挡），回滚到节点前才滑出
+  function applyStack(count){
+    if(count === curStack) return;
+    curStack = count;
+    const isMobile = innerWidth < 768;
+    const PEEK = isMobile ? 44 : 66;   // 每张旧卡上移量：恰好露出左上角中文
+    const SHRINK = isMobile ? 0.03 : 0.02;
+    stackCards.forEach((card, i)=>{
+      if(i < 4){
+        card.classList.remove('top');
+        if(count >= 0 && i < count){
+          const d = count - 1 - i;   // 0=最新卡（最上层）
+          card.style.zIndex = 20 + i;
+          card.style.transform = 'translateX(0) translateY(' + (-d*PEEK) + 'px) scale(' + (1 - d*SHRINK) + ')';
+          if(d === 0) card.classList.add('top');   // 最新卡文字入场动画
+        }else{
+          card.style.transform = 'translateX(115%)';   // 未触发：停在页面外
+        }
+      }else{
+        // 无内容空卡：堆叠底座，常驻半截在页面外
+        if(count >= 0){
+          card.style.zIndex = 5;
+          card.style.transform = 'translateX(52%) translateY(20px) scale(0.96)';
+        }else{
+          card.style.transform = 'translateX(115%)';
+        }
+      }
+    });
+  }
+  // 卡片组淡出/恢复：离开提升机区域时不瞬间消失，优雅淡出后复位（滚回则恢复）
+  const stackWrap = document.getElementById('liftStack');
+  let stackFadeTimer = null;
+  function stackFadeOut(){
+    if(!stackWrap) return;
+    stackWrap.classList.add('fade');
+    if(stackFadeTimer) clearTimeout(stackFadeTimer);
+    stackFadeTimer = setTimeout(()=>{ applyStack(-1); }, 580);
+  }
+  function stackFadeIn(){
+    if(!stackWrap) return;
+    if(stackFadeTimer){ clearTimeout(stackFadeTimer); stackFadeTimer = null; }
+    stackWrap.classList.remove('fade');
+  }
+
+  ScrollTrigger.create({
+    trigger: '#intro-lift',
+    start: 'top bottom',      // 提前100vh开始：intro-lift顶部到达视口底部时（即第4页spacer开始滚动时），幕布立即滑入覆盖纯白
+    end: 'bottom bottom',
+    scrub: true,
+    onUpdate(self){
+      const p = self.progress;     // 0 → 1
+
+      // 幕布覆盖率落盘（0→1）：供全局进度ST驱动白页标题"什么是提升机？"淡出
+      window.__liftCurtainT = Math.min(1, Math.max(0, p / 0.15));
+
+      if(p < 0.15){
+        // === 阶段A：幕布从右往左滑入覆盖全屏 ===
+        // 第4页 sticky 已离开视口，幕布从 transform:translateX(100%)→0% 滑入
+        canvas.style.display = 'none';      // 隐藏canvas，露出幕布
+        curtain.style.display = 'block';
+        const t = p / 0.15;                  // 0→1
+        curtain.style.transform = `translateX(${(1-t)*100}%)`;
+        curtain.style.opacity = 1;
+      } else if(p < 0.35){
+        // === 阶段B：幕布完全覆盖 + 雾气弥散 + 首帧显示 ===
+        // 首帧颜色=幕布色，视觉上无缝衔接；幕布opacity递减=雾气散去
+        canvas.style.display = 'block';
+        curtain.style.transform = 'translateX(0%)';
+        const t = (p - 0.15) / 0.20;         // 0→1
+        curtain.style.opacity = 1 - t;      // 雾气弥散，幕布淡出
+        if(currentFrame !== 0){
+          currentFrame = 0;
+          drawFrame(0);                     // 显示首帧（与幕布色衔接）
+        }
+      } else {
+        // === 阶段C：91帧跟随滚轮滚动播放（效仿四向立库分段映射） ===
+        canvas.style.display = 'block';
+        curtain.style.opacity = 0;
+        const t = (p - 0.35) / 0.65;         // 0→1
+        const frameIdx = Math.min(TOTAL-1, Math.max(0, Math.floor(t * TOTAL)));
+        if(frameIdx !== currentFrame){
+          currentFrame = frameIdx;
+          drawFrame(frameIdx);
+        }
+      }
+
+      // === 节点交互：全页进度45/48/51/53%触发小电视+堆积卡片（仅阶段C方框可见时） ===
+      if(p >= 0.35){
+        const pAll = window.scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        let hit = -1, count = 0;
+        for(let i=0;i<NOTES.length;i++){
+          if(Math.abs(pAll - NOTES[i].at) <= 0.013) hit = i;          // 小电视：节点带内显示
+          if(pAll >= NOTES[i].at - 0.004) count = i + 1;              // 卡片：滚过节点即入栈（不清除）
+        }
+        setTv(hit);
+        stackFadeIn();   // 回到提升机区域：取消淡出（若淡出定时器挂起则一并取消）
+        applyStack(count);
+      } else {
+        setTv(-1);
+        applyStack(-1);
+      }
+    },
+    onLeave(){
+      // 动画2结束：直接隐藏canvas，不保留末尾帧背景
+      canvas.style.display = 'none';
+      canvas.style.zIndex = '1';
+      canvas.style.pointerEvents = 'none';
+      curtain.style.opacity = 0;
+      curtain.style.transform = 'translateX(100%)';
+      setTv(-1);       // 离开提升机区域：小电视关机
+      stackFadeOut();  // 卡片组优雅淡出后复位（衔接结尾四向车动画）
+    },
+    onLeaveBack(){
+      // 回滚到第4页时重置：隐藏fixed层，避免未绘制帧遮挡上方内容导致黑屏
+      canvas.style.display = 'none';
+      canvas.style.zIndex = '1';
+      canvas.style.pointerEvents = 'none';
+      curtain.style.opacity = 0;
+      curtain.style.transform = 'translateX(100%)';
+      currentFrame = -1;
+      setTv(-1);
+      stackFadeIn();
+      applyStack(-1);
+    }
+  });
+
+  console.log('✅ 提升机section滚动驱动已启动（黑色幕布转场+91帧序列滚动播放）');
+})();
+
+/* === 收尾动画：209帧四向车序列跟随滚动播放（无标签，无遮挡） === */
+/* 结构完全复刻提升机（无幕布，首帧=提升机末帧，天然衔接） */
+(function(){
+  const canvas = document.getElementById('endingCanvas');
+  if(!canvas) return;
+  if(typeof ScrollTrigger === 'undefined') return;
+
+  const ctx = canvas.getContext('2d');
+  const TOTAL = 209;               // 收尾.mov 总帧数
+  const frames = [];
+  let loaded = 0;
+  let currentFrame = -1;
+  let lastValidFrame = -1;
+
+  // 预加载209帧WebP序列
+  for(let i=0;i<TOTAL;i++){
+    const img = new Image();
+    img.src = 'assets/ending_webp/frame_' + String(i+1).padStart(3,'0') + '.webp';
+    frames[i] = img;
+    img.onload = ()=>{
+      loaded++;
+      if(loaded === 1){
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        drawFrame(0);
+      }
+    };
+  }
+
+  // 按cover适配绘制（透明底：不填白，直接绘制RGBA帧叠加在section白底上）
+  function drawFrame(idx){
+    if(idx<0 || idx>=TOTAL) idx = 0;
+    const img = frames[idx];
+    if(!img || !img.complete){
+      if(lastValidFrame >= 0 && lastValidFrame !== idx) drawFrame(lastValidFrame);
+      return;
+    }
+    if(canvas.width !== window.innerWidth || canvas.height !== window.innerHeight){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const iw = img.naturalWidth || 1920;
+    const ih = img.naturalHeight || 1080;
+    const cw = canvas.width, ch = canvas.height;
+    const scale = Math.max(cw/iw, ch/ih);
+    const dw = iw*scale, dh = ih*scale;
+    const dx = (cw-dw)/2, dy = (ch-dh)/2;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(img, dx, dy, dw, dh);
+    lastValidFrame = idx;
+    canvas.setAttribute('data-frame', idx);
+  }
+
+  window.addEventListener('resize', ()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if(currentFrame >= 0) drawFrame(currentFrame);
+  });
+
+  // === 分段映射：降低滚轮灵敏度（效仿四向立库520vh+多停留段）===
+  // 删除末尾空帧停留段，帧播完快速进入Why section
+  const SEG = [
+    {ps:0.00, pe:0.06, fs:0,   fe:0},     // 前期静帧（衔接提升机末帧）
+    {ps:0.06, pe:0.16, fs:0,   fe:30},    // 四向车进入画面
+    {ps:0.16, pe:0.19, fs:30,  fe:30},    // ◆停留1
+    {ps:0.19, pe:0.32, fs:30,  fe:70},    // 四向车行驶前段
+    {ps:0.32, pe:0.35, fs:70,  fe:70},    // ◆停留2
+    {ps:0.35, pe:0.50, fs:70,  fe:120},   // 四向车行驶中段
+    {ps:0.50, pe:0.53, fs:120, fe:120},   // ◆停留3
+    {ps:0.53, pe:0.72, fs:120, fe:180},   // 四向车驶出画面
+    {ps:0.72, pe:0.75, fs:180, fe:180},   // ◆停留4
+    {ps:0.75, pe:0.92, fs:180, fe:208},   // 四向车完全驶出
+    {ps:0.92, pe:1.00, fs:208, fe:208}    // 末帧极短停留（8%，快速过渡到Why）
+  ];
+  function progressToFrame(t){
+    if(t <= SEG[0].ps) return SEG[0].fs;
+    if(t >= SEG[SEG.length-1].pe) return SEG[SEG.length-1].fe;
+    for(const s of SEG){
+      if(t >= s.ps && t <= s.pe){
+        const segT = (t - s.ps) / (s.pe - s.ps);
+        return Math.floor(s.fs + segT * (s.fe - s.fs));
+      }
+    }
+    return 0;
+  }
+
+  ScrollTrigger.create({
+    trigger: '#ending',
+    start: 'top bottom',    // 提前触发：ending顶部到达视口底部时canvas就开始显示，消除白色过场
+    end: 'bottom bottom',
+    scrub: true,
+    onEnter(){
+      canvas.style.display = 'block';   // 提前显示canvas，避免白底闪现
+    },
+    onUpdate(self){
+      const p = self.progress;
+      canvas.style.display = 'block';
+
+      const frameIdx = progressToFrame(p);
+      if(frameIdx !== currentFrame){
+        currentFrame = frameIdx;
+        drawFrame(frameIdx);
+      }
+      updateDevLabels(frameIdx);   // 设备标签跟随滚动帧（58-65%区间）
+    },
+    onLeave(){
+      // 动画3结束：直接隐藏canvas，快速进入经纬仪section（不停留末帧）
+      canvas.style.display = 'none';
+      canvas.style.zIndex = '1';
+      canvas.style.pointerEvents = 'none';
+      hideDevLabels();             // 设备标签全部退场
+    },
+    onLeaveBack(){
+      // 回滚到提升机section时重置
+      canvas.style.display = 'none';
+      canvas.style.zIndex = '9979';
+      canvas.style.pointerEvents = 'auto';
+      currentFrame = -1;
+      hideDevLabels();
+    }
+  });
+
+  console.log('✅ 收尾动画已启动（209帧四向车，无标签遮挡）');
+
+  /* === 设备名称跟踪标签（进度58-65% ≈ 帧25-94）===
+     六设备独立滑入运动：关键帧采样各设备中心x与顶部y（帧内1920x1080系，逐帧实测校准），
+     双轴分段线性插值跟随；标签锚点=设备顶部上方约14px（半高28+间隙14），不遮挡设备；
+     堆垛机顶部越出画面时标签贴顶显示（允许遮挡）；设备出现帧弹出（RotatingText字符spring入场），
+     帧94（全页65%）整体上滑退场 */
+  const DEV_GONE = 94;    // 全页65%：提前退场
+  const DEVS = [
+    // en: 英文名（uppercase），track: [帧, 中心x, 顶部y]
+    {name:'电控柜',     en:'Control Cabinet', track:[[62,135,141],[77,304,356],[90,369,450],[102,491,497]]},
+    {name:'叉车',       en:'Forklift',        track:[[33,52,84],[48,285,431],[52,338,534],[62,491,600],[77,553,703],[90,609,778],[102,666,731]]},
+    {name:'拆叠盘机',   en:'Tray Stacker',    track:[[25,347,347],[33,469,506],[48,581,666],[52,622,675],[62,745,741],[77,750,788],[90,754,806],[102,797,825]]},
+    {name:'链条输送机', en:'Chain Conveyor',  track:[[25,1571,497],[33,1453,609],[48,1303,731],[52,1303,750],[62,1247,769],[77,1215,816],[90,1185,853],[102,1144,844]]},
+    {name:'水平仪',     en:'Laser Level',     track:[[36,1855,160],[48,1682,188],[52,1635,263],[62,1528,403],[77,1397,544],[90,1359,600],[102,1303,609]]},
+    {name:'堆垛机',     en:'Stacker Crane',   track:[[52,1947,20],[62,1832,0],[77,1659,84],[90,1584,244],[102,1485,319]]}
+  ];
+  const devLayer = document.createElement('div');
+  devLayer.id = 'devLabels';
+  document.body.appendChild(devLayer);
+  DEVS.forEach(d=>{
+    d.el = document.createElement('div');
+    d.el.className = 'dev-label';
+    devLayer.appendChild(d.el);
+    d.el._gone = true;
+  });
+  // 关键帧轨迹插值（x/y双轴）
+  function devTrackAt(track, f){
+    if(f <= track[0][0]) return [track[0][1], track[0][2]];
+    for(let i=1;i<track.length;i++){
+      if(f <= track[i][0]){
+        const a=track[i-1], b=track[i];
+        const t=(f-a[0])/(b[0]-a[0]);
+        return [a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];
+      }
+    }
+    const l=track[track.length-1];
+    return [l[1], l[2]];
+  }
+  // 重建双行遮罩结构触发lineUp入场（复刻首页标题：上英下中，遮罩内由下滑入）
+  function devBuildChars(d){
+    d.el.innerHTML =
+      '<span class="line en"><span>'+d.en+'</span></span>' +
+      '<span class="line cn"><span>'+d.name+'</span></span>';
+  }
+  function devHide(d){
+    if(d.el._gone) return;
+    d.el._gone = true;
+    d.el.classList.add('out');
+    clearTimeout(d.el._t);
+    d.el._t = setTimeout(()=>{ d.el.style.display = 'none'; d.el.classList.remove('out'); }, 360);
+  }
+  function updateDevLabels(f){
+    // 帧→视口坐标：与drawFrame相同的cover映射
+    const scale = Math.max(innerWidth/1920, innerHeight/1080);
+    const dx = (innerWidth - 1920*scale)/2, dy = (innerHeight - 1080*scale)/2;
+    DEVS.forEach(d=>{
+      const visible = f >= d.track[0][0] && f < DEV_GONE;
+      if(visible){
+        if(d.el._gone){
+          d.el._gone = false;
+          clearTimeout(d.el._t);
+          d.el.classList.remove('out');
+          devBuildChars(d);          // 重建字符→spring入场重播
+          d.el.style.display = 'block';
+        }
+        const [x, yTop] = devTrackAt(d.track, f);
+        let lx = dx + x*scale;
+        // 屏幕边距clamp：入场截断时标签不溢出
+        const hw = d.el.offsetWidth/2 + 8;
+        lx = Math.max(hw, Math.min(lx, innerWidth - hw));
+        d.el.style.left = lx + 'px';
+        // 标签悬于设备顶上方约14px（半高28+间隙14），不遮挡设备；顶部越出画面时贴顶显示（堆垛机）
+        let ly = dy + yTop*scale - 42;
+        ly = Math.max(ly, 46);
+        d.el.style.top = ly + 'px';
+      }else{
+        devHide(d);
+      }
+    });
+  }
+  function hideDevLabels(){ DEVS.forEach(devHide); }
+})();
+</script>
+
+<script>
+/* ============================================================
+   Section 5: 名片视频（自动播放 / 结束按钮，不限制滚动）
+   ============================================================ */
+(function(){
+  const cardVideo = document.getElementById('cardVideo');
+  const cardControls = document.getElementById('cardVideoControls');
+  const cardReplayBtn = document.getElementById('cardReplayBtn');
+  const cardShowBtn = document.getElementById('cardShowBtn');
+  const cardSection = document.getElementById('cardVideoSection');
+  if(!cardVideo || !cardSection) return;
+
+  let cardPlayed = false;        // 首次播放标记（仅用于控制自动播放一次）
+  let cardPendingAuto = false;   // 已到播放时机但视频未就绪的挂起标记
+
+  // 预加载策略：页面打开即后台缓冲（preload=auto）；滚到名片页时若未就绪，垫图(poster)顶着，
+  // 'canplay'一到立即接管播放——就绪前绝不盲播，杜绝卡顿
+  const tryCardPlay = ()=>{
+    if(!cardPendingAuto || cardPlayed) return;
+    if(cardVideo.readyState >= 3){          // HAVE_FUTURE_DATA：可流畅播放
+      cardPendingAuto = false;
+      cardVideo.play().catch(()=>{});
+    }
+  };
+  cardVideo.addEventListener('canplay', tryCardPlay);
+
+  // 视频 95% 进入视口时自动播放（仅首次；未加载完则挂起，等 canplay）
+  const cardObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting && entry.intersectionRatio >= 0.95 && !cardPlayed && cardVideo.paused){
+        cardPendingAuto = true;
+        tryCardPlay();
+      }
+    });
+  }, {threshold:[0, .25, .5, .75, .95, 1]});
+  cardObserver.observe(cardSection);
+
+  cardVideo.addEventListener('ended', ()=>{
+    cardVideo.pause();
+    if(cardVideo.duration && !isNaN(cardVideo.duration)){
+      cardVideo.currentTime = cardVideo.duration;   // 停在最后一帧
+    }
+    cardControls.classList.add('visible');
+    cardPlayed = true;
+  });
+
+  // 重新播放：从头播放，不再锁定滚动
+  cardReplayBtn.addEventListener('click', ()=>{
+    cardControls.classList.remove('visible');
+    cardVideo.currentTime = 0;
+    cardVideo.play().catch(()=>{});
+  });
+
+  // 名片显示：跳转并停在第5秒画面，按钮保持可见
+  cardShowBtn.addEventListener('click', ()=>{
+    cardVideo.currentTime = 5;
+    cardVideo.pause();
+  });
+})();
+</script>
+
+<script>
+/* ============================================================
+   Section 5: 名片信息区 FlowingMenu 交互
+   （悬停滑入白色跑马灯 + 横向流动 + 圆角小图）
+   ============================================================ */
+(function(){
+  'use strict';
+  const info = document.getElementById('cardInfo');
+  const items = info ? info.querySelectorAll('.card-info-item') : [];
+  if(!items.length) return;
+
+  const animDefaults = { duration: .6, ease: 'expo.out' };
+  const marqueeAnims = [];
+
+  function setupMarquee(item, idx){
+    const inner = item.querySelector('.card-info-marquee-inner');
+    const part = item.querySelector('.card-info-marquee-part');
+    if(!inner || !part) return;
+    const width = item.offsetWidth;
+    inner.innerHTML = '';
+    inner.appendChild(part);
+    let total = part.offsetWidth;
+    while(total < width * 1.5){
+      inner.appendChild(part.cloneNode(true));
+      total += part.offsetWidth;
+    }
+    if(marqueeAnims[idx]) marqueeAnims[idx].kill();
+    gsap.set(inner, { x: 0 });
+    marqueeAnims[idx] = gsap.to(inner, {
+      x: () => -(inner.scrollWidth / 2),
+      duration: 15, ease: 'none', repeat: -1
+    });
+  }
+
+  function findClosestEdge(mx, my, w, h){
+    const top = Math.pow(mx - w/2, 2) + Math.pow(my, 2);
+    const bottom = Math.pow(mx - w/2, 2) + Math.pow(my - h, 2);
+    return top < bottom ? 'top' : 'bottom';
+  }
+
+  items.forEach((item, idx) => {
+    const marquee = item.querySelector('.card-info-marquee');
+    const inner = item.querySelector('.card-info-marquee-inner');
+    if(!marquee || !inner) return;
+    setupMarquee(item, idx);
+
+    let enterEdge = 'bottom';
+    const enter = (e) => {
+      const rect = item.getBoundingClientRect();
+      enterEdge = findClosestEdge(e.clientX - rect.left, e.clientY - rect.top, rect.width, rect.height);
+      gsap.timeline({ defaults: animDefaults })
+        .set(marquee, { y: enterEdge === 'top' ? '-101%' : '101%' })
+        .set(inner, { y: enterEdge === 'top' ? '101%' : '-101%' })
+        .to([marquee, inner], { y: '0%' });
+    };
+    const leave = () => {
+      gsap.timeline({ defaults: animDefaults })
+        .to(marquee, { y: enterEdge === 'top' ? '-101%' : '101%' })
+        .to(inner, { y: enterEdge === 'top' ? '101%' : '-101%' });
+    };
+    item.addEventListener('mouseenter', enter);
+    item.addEventListener('mouseleave', leave);
+    // 移动端：点击展开/收起
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const open = marquee._open;
+      if(open){
+        leave(); marquee._open = false;
+      }else{
+        enterEdge = 'bottom';
+        gsap.timeline({ defaults: animDefaults })
+          .set(marquee, { y: '101%' })
+          .set(inner, { y: '-101%' })
+          .to([marquee, inner], { y: '0%' });
+        marquee._open = true;
+      }
+    });
+  });
+
+  window.addEventListener('resize', () => {
+    items.forEach((item, idx) => setupMarquee(item, idx));
+  });
+
+  // 进入视口时交错入场
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if(en.isIntersecting){
+          info.dataset.animated = 'true';
+          const rows = info.querySelectorAll('.card-info-item');
+          gsap.to(rows, {
+            opacity: 1, y: 0, duration: .7, stagger: .12, ease: 'power3.out', delay: .15
+          });
+          obs.disconnect();
+        }
+      });
+    }, { threshold: .35 });
+    obs.observe(info);
+  }else{
+    info.dataset.animated = 'true';
+  }
+})();
+</script>
+
+<script>
+/* ============================================================
+   Section 9: Thank You 盒阵（黑色实心立方体拼字 + 悬停3D倾斜）
+   ============================================================ */
+(function(){
+  'use strict';
+  const grid = document.getElementById('thankYouGrid');
+  if(!grid) return;
+
+  // 3×5 位图字体（"Thank You"）
+  const GLYPHS = {
+    'T': ['111','010','010','010','010'],
+    'h': ['100','100','111','101','101'],
+    'a': ['011','101','111','101','101'],
+    'n': ['100','110','101','101','101'],
+    'k': ['100','101','110','101','100'],
+    'Y': ['101','101','010','010','010'],
+    'o': ['010','111','101','111','010'],
+    'u': ['100','100','101','101','111'],
+    ' ': ['000','000','000','000','000']
+  };
+  const text = 'Thank You';
+  // 逐行拼位图，字母间1列、单词间2列
+  const bitmapRows = [0,1,2,3,4].map(r => {
+    let line = '';
+    for(const ch of text){
+      line += GLYPHS[ch][r];
+      line += (ch === ' ') ? '00' : '0';
+    }
+    return line;
+  });
+  const TEXT_COLS = bitmapRows[0].length;   // 32
+  const TEXT_ROWS = bitmapRows.length;      // 5
+
+  // 生成位图查询表
+  const isTextCell = {};
+  bitmapRows.forEach((line, r) => {
+    for(let c = 0; c < line.length; c++){
+      if(line[c] === '1') isTextCell[(r + '-' + c)] = true;
+    }
+  });
+
+  const GAP = 3;
+  const isMobile = window.innerWidth < 768;
+  const cell = isMobile ? 24 : 50;
+  // 网格布局共享状态（build 计算实际渲染尺寸，交互映射必须用这套值）
+  let cols = 0, rows = 0, cellW = cell, cellH = cell;
+
+  function build(){
+    grid.innerHTML = '';
+    const w = grid.clientWidth || window.innerWidth;
+    const h = grid.clientHeight || Math.max(300, window.innerHeight * .6);
+    cols = Math.max(TEXT_COLS + 4, Math.floor((w + GAP) / (cell + GAP)));
+    rows = Math.max(TEXT_ROWS + 2, Math.floor((h + GAP) / (cell + GAP)));
+    // 文字居中：起始行列
+    const startC = Math.floor((cols - TEXT_COLS) / 2);
+    const startR = Math.floor((rows - TEXT_ROWS) / 2);
+
+    grid.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+    grid.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
+    grid.style.gap = GAP + 'px';
+
+    const frag = document.createDocumentFragment();
+    for(let r = 0; r < rows; r++){
+      for(let c = 0; c < cols; c++){
+        const cube = document.createElement('div');
+        cube.className = 'ty-cube';
+        for(let f = 0; f < 6; f++){
+          const face = document.createElement('div');
+          face.className = 'ty-cube-face';
+          cube.appendChild(face);
+        }
+        const key = ((r - startR) + '-' + (c - startC));
+        if(isTextCell[key]) cube.classList.add('solid');
+        frag.appendChild(cube);
+      }
+    }
+    grid.appendChild(frag);
+    cubes = Array.prototype.slice.call(grid.children);
+    // 1fr 列 + gap 拉伸后的实际格子尺寸（鼠标映射用它，否则倾斜盒子和鼠标错位）
+    cellW = (grid.clientWidth - (cols - 1) * GAP) / cols;
+    cellH = (grid.clientHeight - (rows - 1) * GAP) / rows;
+    // cube 深度按实际格子尺寸设置
+    const half = Math.max(10, Math.floor(Math.min(cellW, cellH) / 2)) + 'px';
+    cubes.forEach(cb => cb.style.setProperty('--cube-half', half));
+  }
+
+  let cubes = [];
+  build();
+  window.addEventListener('resize', () => { build(); });
+
+  // 鼠标影响：靠近时 3D 倾斜（RAF 节流）
+  const TILT = 18;        // 最大倾斜角度
+  const RADIUS = isMobile ? 4 : 6;   // 影响半径（格）
+  let raf = null;
+  let mouseX = -9999, mouseY = -9999;
+
+  grid.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    if(!raf) raf = requestAnimationFrame(tiltLoop);
+  });
+  grid.addEventListener('mouseleave', () => {
+    mouseX = -9999; mouseY = -9999;
+    if(!raf) raf = requestAnimationFrame(tiltLoop);
+  });
+  // 空闲自动游标
+  let idle = 0, idleX = 0, idleY = 0, idleDir = 1;
+  setInterval(() => {
+    idle++;
+    if(idle > 60){
+      idleX += idleDir * (window.innerWidth * .02);
+      idleY += 18 * Math.sin(idle / 12);
+      if(idleX > window.innerWidth * .8){ idleDir = -1; }
+      if(idleX < window.innerWidth * .2){ idleDir = 1; }
+      mouseX = idleX; mouseY = idleY;
+      if(!raf) raf = requestAnimationFrame(tiltLoop);
+    }
+  }, 1000);
+
+  // 屏幕坐标 → 格子坐标（使用 build 计算的实际格子尺寸）
+  function pointToCell(x, y){
+    const rect = grid.getBoundingClientRect();
+    return {
+      c: Math.floor((x - rect.left) / (cellW + GAP)),
+      r: Math.floor((y - rect.top) / (cellH + GAP))
+    };
+  }
+
+  let touched = [];   // 上一帧被倾斜的盒子，帧首复位（避免移出后卡在倾斜状态）
+  function tiltLoop(){
+    raf = null;
+    for(let i = 0; i < touched.length; i++) touched[i].style.transform = '';
+    touched = [];
+    let ix = -1, iy = -1;
+    if(mouseX > -5000){
+      const pos = pointToCell(mouseX, mouseY);
+      ix = pos.c; iy = pos.r;
+    }
+    if(ix < 0) return;   // 鼠标不在网格内：仅复位
+    // 只更新受影响范围的格子（性能优化）
+    for(let r = Math.max(0, iy - RADIUS); r <= iy + RADIUS; r++){
+      for(let c = Math.max(0, ix - RADIUS); c <= ix + RADIUS; c++){
+        if(r >= rows || c >= cols) continue;   // 越界（防止索引换行串到错误格子）
+        const idx = r * cols + c;
+        if(idx < 0 || idx >= cubes.length) continue;
+        const el = cubes[idx];
+        const dx = (c - ix), dy = (r - iy);
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const max = RADIUS;
+        if(dist > max) continue;
+        const f = 1 - dist / max;
+        const rx = -dy * TILT * f;
+        const ry = dx * TILT * f;
+        el.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+        touched.push(el);
+      }
+    }
+  }
+
+  // 点击涟漪
+  grid.addEventListener('pointerdown', (e) => {
+    const pos = pointToCell(e.clientX, e.clientY);
+    const ix = pos.c, iy = pos.r;
+    let ring = 0;
+    const ripple = setInterval(() => {
+      ring++;
+      for(let r = iy - ring; r <= iy + ring; r++){
+        for(let c = ix - ring; c <= ix + ring; c++){
+          if(r < 0 || c < 0 || r >= rows || c >= cols) continue;
+          const idx = r * cols + c;
+          if(idx < 0 || idx >= cubes.length) continue;
+          if(Math.abs(r - iy) === ring || Math.abs(c - ix) === ring){
+            const el = cubes[idx];
+            el.classList.add('ripple');
+            setTimeout(()=> el.classList.remove('ripple'), 400);
+          }
+        }
+      }
+      if(ring > 6) clearInterval(ripple);
+    }, 80);
+  });
+
+  console.log('✅ Thank You 盒阵已生成（' + cubes.length + ' 个立方体）');
+})();
+</script>
+
+<!-- 玻璃金属流体点缀（白色页面装饰，剪切+缩放+淡化，multiply混合融入白底） -->
+<style>
+.fluid-accent{
+  position:absolute;
+  pointer-events:none;
+  z-index:0;
+  mix-blend-mode:multiply;
+  filter:blur(1px) saturate(.6);
+  opacity:.18;
+}
+.fluid-accent.top-right{top:-8%;right:-10%;width:340px;height:340px;clip-path:ellipse(45% 40% at 60% 50%)}
+.fluid-accent.bottom-left{bottom:-12%;left:-8%;width:300px;height:300px;clip-path:ellipse(50% 45% at 40% 55%);opacity:.15}
+.fluid-accent.mid-right{top:30%;right:-12%;width:260px;height:260px;clip-path:polygon(0 20%,100% 0,100% 80%,20% 100%);opacity:.12}
+@media(max-width:768px){
+  .fluid-accent{width:200px !important;height:200px !important;opacity:.10 !important}
+}
+</style>
+<script>
+/* ---------- 防护层（独立IIFE：try/catch自隔离，不依赖不修改主页面任何逻辑） ---------- */
+(function(){
+  try{
+    // ① 版权签名：字符码存储（源码不可读）→ 运行时解码 → 零宽字符编码（\u200B=0 \u200C=1 \u200D=帧界）
+    //    编码内容："陆椰文 Eavan ©2026 版权"
+    var SIG=[0x9646,0x6930,0x6587,32,69,97,118,97,110,32,0xA9,50,48,50,54,32,0x7248,0x6743];
+    var s='';SIG.forEach(function(c){s+=String.fromCharCode(c)});
+    var zw='\u200D';
+    for(var i=0;i<s.length;i++){
+      var cc=s.charCodeAt(i).toString(2);while(cc.length<16)cc='0'+cc;
+      for(var j=0;j<16;j++)zw+=cc[j]==='0'?'\u200B':'\u200C';
+      zw+='\u200D';
+    }
+    // 仅注入姓名/职称/页面标题（不碰电话邮箱，避免影响正常复制使用；防重复注入）
+    var vals=document.querySelectorAll('.card-info-value');
+    if(vals[0]&&vals[0].textContent.indexOf('\u200D')<0)vals[0].textContent+=zw;
+    if(vals[1]&&vals[1].textContent.indexOf('\u200D')<0)vals[1].textContent+=zw;
+    if(document.title.indexOf('\u200D')<0)document.title+=zw;
+    // ② 冗余干扰节点：离屏fixed定位，不参与布局、不渲染可见内容、零交互影响
+    var mk=function(cls,txt){var el=document.createElement('div');el.className=cls;el.style.cssText='position:fixed;left:-9999px;top:0;pointer-events:none';el.textContent=txt;document.body.appendChild(el)};
+    mk('intro-data-note','数据归档 sync · v2.4.1');
+    mk('nav-badge cache','build 20260831');
+  }catch(e){/* 防护层任何异常静默隔离，绝不影响页面运行 */}
+})();
+</script>
+</body>
+</html>
